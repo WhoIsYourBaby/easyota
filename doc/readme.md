@@ -1,5 +1,5 @@
 # 环境搭建
-
+122.51.162.24
 - 安装pip 
 ```
 yum upgrade python-setuptools
