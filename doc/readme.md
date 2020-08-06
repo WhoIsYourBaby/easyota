@@ -13,8 +13,7 @@ pip install isign
 
 - 创建server
 node v10.15.3
-npm
-npm
+npm 6.4.1
 ```
 npm install -g koa-generator
 koa2 server
