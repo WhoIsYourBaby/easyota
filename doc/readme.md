@@ -10,3 +10,13 @@ yum install python-pip
 ```
 pip install isign
 ```
+
+- 创建server
+node v10.15.3
+npm
+npm
+```
+npm install -g koa-generator
+koa2 server
+cd server & npm install
+```
