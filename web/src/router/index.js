@@ -163,6 +163,28 @@ export const constantRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+constantRoutes.push({
+  path: '/myapp',
+  component: Layout,
+  redirect: '/example/table',
+  name: 'myapp',
+  meta: { title: 'Myapp', icon: 'el-icon-s-help' },
+  children: [
+    {
+      path: 'table',
+      name: 'Table',
+      component: () => import('@/views/table/index'),
+      meta: { title: 'Table', icon: 'table' }
+    },
+    {
+      path: 'tree',
+      name: 'Tree',
+      component: () => import('@/views/tree/index'),
+      meta: { title: 'Tree', icon: 'tree' }
+    }
+  ]
+})
+
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
