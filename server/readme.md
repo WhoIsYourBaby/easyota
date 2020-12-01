@@ -32,8 +32,15 @@
   - create_time
   - app_id(关联对应app)
   - url(oss/本地)
-  - type(0:图片，1:视频)
-  - suffix(jpg/png/mp4/...)
+  - suffix(jpg/png...)
+
+
+- app_video
+  - id
+  - create_time
+  - app_id(关联对应app)
+  - url(oss/本地)
+  - suffix(mp4...)
   
 - app_version
   - id
