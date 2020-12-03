@@ -2,7 +2,7 @@
 ## 0、数据库设置
 
 - mysql
-- 账号密码:qrota123/qrota123
+- 账号密码:easyota123/easyota123
 
 
 ## 1、表结构设计

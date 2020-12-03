@@ -9,3 +9,11 @@ module.exports.makePromise = (connection, sql, arg) => {
     });
   });
 };
+
+
+module.exports.config = {
+  host     : 'localhost',
+  user     : 'easyota',
+  password : 'Ligun@5815',
+  database : 'easyota'
+};
