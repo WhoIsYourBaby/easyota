@@ -6,6 +6,7 @@
     "htmlWhitespaceSensitivity": "ignore",
     "prettier.semi": false,
     "trailingComma": "none",
+    "semi": true,
     "overrides": [
         {
             "files": ".prettierrc",

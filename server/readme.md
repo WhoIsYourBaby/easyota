@@ -1,8 +1,15 @@
 
+# server搭建
+
+- clone代码
+- cd .../server
+- npm install
+
+
+
 ## 0、数据库设置
 
-- mysql
-- 账号密码:easyota123/easyota123
+- .../server/utils/mysql.js
 
 
 ## 1、表结构设计
@@ -25,22 +32,15 @@
   - desc
   - platform
   - bundleid
-  
 
-- app_screen
+
+- source(附件存储表)
   - id
   - create_time
-  - app_id(关联对应app)
-  - url(oss/本地)
-  - suffix(jpg/png...)
-
-
-- app_video
-  - id
-  - create_time
-  - app_id(关联对应app)
-  - url(oss/本地)
-  - suffix(mp4...)
+  - app_id(关联对应app，可空)
+  - url
+  - store(ali/qiniu/tencent/local)
+  - type(pic/video/ipa/apk/...)
   
 - app_version
   - id
