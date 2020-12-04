@@ -8,8 +8,15 @@ router.post('/login', async (ctx, next) => {
   const qbody = ctx.request.body;
   const email = qbody.email;
   const secret = qbody.password;
-  console.log(email);
-  ctx.body = {code: 1, msg: 'ok', body: null};
+  const conn = mysql.createConnection(dbhealper.config);
+  conn.connect();
+  const query = 'select * from user where email=? and secret=?;';
+  const users = await dbhealper.makePromise(conn, query);
+  if (users.length > 0) {
+    ctx.body = {code: 1, msg: 'ok', body: users[1]};
+  } else {
+    ctx.body = {code: 1, msg: 'user not exist', body: null};
+  }
 });
 
 router.get('/list', async (ctx, next) => {
