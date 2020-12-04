@@ -1,13 +1,27 @@
 const router = require('koa-router')();
+const mysql = require('mysql');
+const dbhealper = require('../utils/dbhealper');
 
 router.prefix('/users');
 
-router.get('/', function (ctx, next) {
-  ctx.body = 'this is a users response!';
+router.post('/login', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const email = qbody.email;
+  const secret = qbody.password;
+  console.log(email);
+  ctx.body = {code: 1, msg: 'ok', body: null};
 });
 
-router.get('/bar', function (ctx, next) {
-  ctx.body = 'this is a users/bar response';
+router.get('/list', async (ctx, next) => {
+  const conn = mysql.createConnection(dbhealper.config);
+  conn.connect();
+  const chaptersQuery = 'select * from user;';
+  const apps = await dbhealper.makePromise(conn, chaptersQuery);
+  ctx.body = {
+    code: 1,
+    msg: 'ok',
+    body: apps
+  };
 });
 
 module.exports = router;
