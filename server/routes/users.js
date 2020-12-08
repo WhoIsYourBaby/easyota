@@ -29,6 +29,42 @@ router.post('/login', async (ctx, next) => {
   }
 });
 
+router.post('/register', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const email = qbody.email;
+  const password = qbody.password;
+  const nickname = qbody.nickname;
+  const conn = mysql.createConnection(dbhealper.config);
+  conn.connect();
+  const query = 'select * from user where email=?;';
+  const users = await dbhealper.makePromise(conn, query, [email]);
+  if (users.length > 0) {
+    ctx.body = {code: 500, msg: '该邮箱地址已被他人注册', body: null};
+  } else {
+    const type = 'user';
+    const insert = 'insert into user (email, password, nickname, type) values (?, ?, ?, ?)';
+    const prom = await dbhealper.makePromise(conn, insert, [email, password, nickname, type]);
+    const payload = {
+      exp: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      id: prom.insertId,
+      type: type,
+      email: email
+    };
+    const token = jwt.sign(payload, 'easyota0');
+    ctx.set('Authorization', 'Bearer ' + token);
+    ctx.body = {
+      code: 200,
+      msg: '注册成功',
+      body: {
+        id: prom.insertId,
+        email: email,
+        nickname: nickname,
+        type: type
+      }
+    };
+  }
+});
+
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   if (user.type === 'admin') {
@@ -42,7 +78,7 @@ router.get('/list', async (ctx, next) => {
       body: apps
     };
   } else {
-    ctx.body = {code: 407, msg: '您没有相应权限', body: null};
+    ctx.body = {code: 403, msg: '您没有相应权限', body: null};
   }
 });
 
