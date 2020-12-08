@@ -20,7 +20,7 @@
   - email
   - nickname
   - secret
-  - type(账号类型：管理员、普通用户、邀请用户)
+  - type(账号类型：admin/user/guest)
 
 - app(支持3个视频10张截图)
   - id

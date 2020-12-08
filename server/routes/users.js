@@ -11,12 +11,19 @@ router.post('/login', async (ctx, next) => {
   const password = qbody.password;
   const conn = mysql.createConnection(dbhealper.config);
   conn.connect();
-  const query = 'select * from user where email=? and secret=?;';
+  const query = 'select * from user where email=? and password=?;';
   const users = await dbhealper.makePromise(conn, query, [email, password]);
   if (users.length > 0) {
-    const token = jwt.sign(users[1], 'easyota0', { expiresIn: '24h' });
-    ctx.response.header.Authentication = token;
-    ctx.body = {code: 200, msg: 'ok', body: users[1]};
+    const us = users[0];
+    const payload = {
+      exp: Date.now() + 1000 * 60 * 60 * 24 * 7,
+      id: us.id,
+      type: us.type,
+      email: us.email
+    };
+    const token = jwt.sign(payload, 'easyota0');
+    ctx.set('Authentication', 'Bearer ' + token);
+    ctx.body = {code: 200, msg: 'ok', body: us};
   } else {
     ctx.body = {code: 500, msg: 'user not exist', body: null};
   }
