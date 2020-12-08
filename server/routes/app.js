@@ -1,5 +1,10 @@
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
+const multer = require('@koa/multer');
+const path = require('path');
+const upload = multer({
+  dest: path.join(__dirname, '/public/upload'),
+});
 
 router.prefix('/app');
 
@@ -19,8 +24,12 @@ router.get('/list', async (ctx, next) => {
   };
 });
 
-router.post('/upload', async (ctx, next) => {
-  
+router.post('/upload', upload.single('file'), async (ctx, next) => {
+  console.log('ctx.file', ctx.file);
+  ctx.body = {
+    code: 200,
+    msg: 'ok'
+  };
 });
 
 module.exports = router;
