@@ -7,10 +7,13 @@ const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
 const cors = require('koa2-cors');
 const koajwt = require('koa-jwt');
-const jwt = require('jsonwebtoken');
+const koaBody = require('koa-body');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
+const appRoute = require('./routes/app');
+
+const dbconn = require('./middle/dbconn');
 
 // logger
 app.use(async (ctx, next) => {
@@ -46,10 +49,35 @@ app.use(
   })
 );
 
-// middlewares
+//全局接口生成一个sqlconn
+//并在接口最后关闭sqlconn
 app.use(
-  bodyparser({
-    enableTypes: ['json', 'form', 'text']
+  dbconn().unless({
+    path: []
+  })
+);
+
+// middlewares
+// app.use(
+//   bodyparser({
+//     enableTypes: ['json', 'form', 'text']
+//   })
+// );
+//文件上传和表单、json
+app.use(
+  koaBody({
+    multipart: true, // 支持文件上传
+    encoding: 'gzip',
+    formidable: {
+      uploadDir: path.join(__dirname, 'public/upload/'), // 设置文件上传目录
+      keepExtensions: true, // 保持文件的后缀
+      maxFieldsSize: 200 * 1024 * 1024, // 文件上传大小
+      onFileBegin: (name, file) => {
+        // 文件上传前的设置
+        // console.log(`name: ${name}`);
+        // console.log(file);
+      }
+    }
   })
 );
 app.use(json());
@@ -65,6 +93,7 @@ app.use(
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+app.use(appRoute.routes(), appRoute.allowedMethods());
 
 // error-handling
 /*
