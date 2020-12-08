@@ -26,7 +26,7 @@ router.get('/mysql', async (ctx, next) => {
     "select * from app;";
   const apps = await dbhealper.makePromise(conn, chaptersQuery);
   ctx.body = {
-      code: 1,
+      code: 200,
       msg: 'ok',
       body: apps,
   };

@@ -23,12 +23,13 @@ app.use(async (ctx, next) => {
 // error handler
 onerror(app);
 app.use(cors());
-/*
+/*生产环境放开
 app.use((ctx, next) => {
   return next().catch((err) => {
+    console.log(JSON.stringify(err));
     ctx.body = {
       code: err.status,
-      msg: 'some error occured',
+      msg: err.message,
       body: err
     };
   });
@@ -66,12 +67,14 @@ app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 
 // error-handling
+/*
 app.on('error', (err, ctx) => {
   ctx.body = {
-    code: -1000,
-    msg: 'some error occured!',
+    code: err.status,
+    msg: err.message,
     body: err
   };
 });
+*/
 
 module.exports = app;
