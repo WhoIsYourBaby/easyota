@@ -22,23 +22,28 @@ router.post('/login', async (ctx, next) => {
       email: us.email
     };
     const token = jwt.sign(payload, 'easyota0');
-    ctx.set('Authentication', 'Bearer ' + token);
+    ctx.set('Authorization', 'Bearer ' + token);
     ctx.body = {code: 200, msg: 'ok', body: us};
   } else {
-    ctx.body = {code: 500, msg: 'user not exist', body: null};
+    ctx.body = {code: 407, msg: '您没有相应权限', body: null};
   }
 });
 
 router.get('/list', async (ctx, next) => {
-  const conn = mysql.createConnection(dbhealper.config);
-  conn.connect();
-  const chaptersQuery = 'select * from user;';
-  const apps = await dbhealper.makePromise(conn, chaptersQuery);
-  ctx.body = {
-    code: 200,
-    msg: 'ok',
-    body: apps
-  };
+  const user = ctx.state.user;
+  if (user.type === 'admin') {
+    const conn = mysql.createConnection(dbhealper.config);
+    conn.connect();
+    const chaptersQuery = 'select * from user;';
+    const apps = await dbhealper.makePromise(conn, chaptersQuery);
+    ctx.body = {
+      code: 200,
+      msg: 'ok',
+      body: apps
+    };
+  } else {
+    ctx.body = {code: 407, msg: '您没有相应权限', body: null};
+  }
 });
 
 module.exports = router;
