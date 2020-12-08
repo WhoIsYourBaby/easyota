@@ -23,7 +23,11 @@ router.post('/login', async (ctx, next) => {
     };
     const token = jwt.sign(payload, 'easyota0');
     ctx.set('Authorization', 'Bearer ' + token);
-    ctx.body = {code: 200, msg: 'ok', body: us};
+    ctx.body = {code: 200, msg: 'ok', body: {
+      id: us.id,
+      email: us.email,
+      nickname: us.nickname,
+    }};
   } else {
     ctx.body = {code: 407, msg: '您没有相应权限', body: null};
   }
@@ -58,8 +62,7 @@ router.post('/register', async (ctx, next) => {
       body: {
         id: prom.insertId,
         email: email,
-        nickname: nickname,
-        type: type
+        nickname: nickname
       }
     };
   }
