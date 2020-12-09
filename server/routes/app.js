@@ -3,6 +3,7 @@ const dbhealper = require('../utils/dbhealper');
 const multer = require('@koa/multer');
 const path = require('path');
 const UUID = require('node-uuid');
+const fs = require('fs');
 const AppInfoParser = require('app-info-parser');
 
 const upload = multer({
@@ -79,12 +80,32 @@ async function handleIos(conn, user, appinfo) {
   const bundleId = appinfo.CFBundleIdentifier;
   const version = appinfo.CFBundleShortVersionString;
   const build = appinfo.CFBundleVersion;
+  //处理图片
+  const iconData = appinfo.icon;
+  const iconPath = saveIcon(iconData);
   //1 如果已经存在则升级
   //2 如果不存在则新生成app+版本
-  const insert = '';
-  const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
+  // const insert = '';
+  // const apps = await dbhealper.makePromise(conn, query, [user.id]);
+  return {};
 }
 
-async function handleAndroid(conn, user, appinfo) {}
+async function handleAndroid(conn, user, appinfo) {
+  return {};
+}
+
+function saveIcon(iconData) {
+  var base64Data = iconData.replace(/^data:image\/\w+;base64,/, '');
+  var dataBuffer = new Buffer(base64Data, 'base64');
+  let filename = UUID.v1().replace(/-/g, '') + '.png';
+  let fpath = path.join(__dirname, '../public/upload');
+  fpath = path.join(fpath, filename);
+  fs.writeFile(fpath, dataBuffer, function (err) {
+    if (err) {
+      console.log(err);
+    }
+  });
+  return fpath;
+}
 
 module.exports = router;

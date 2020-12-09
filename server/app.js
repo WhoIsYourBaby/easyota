@@ -25,6 +25,32 @@ app.use(async (ctx, next) => {
 // error handler
 onerror(app);
 app.use(cors());
+
+//全局接口生成一个sqlconn
+//并在接口最后关闭sqlconn
+app.use(
+  dbconn().unless({
+    path: []
+  })
+);
+
+//middlewares
+app.use(
+  bodyparser({
+    enableTypes: ['json', 'form', 'text']
+  })
+);
+app.use(json());
+app.use(logger());
+const publicPath = __dirname + '/public';
+app.use(require('koa-static')(publicPath));
+
+app.use(
+  views(__dirname + '/views', {
+    extension: 'pug'
+  })
+);
+
 /*生产环境放开
 app.use((ctx, next) => {
   return next().catch((err) => {
@@ -45,30 +71,6 @@ app.use(
     secret: tokenKey
   }).unless({
     path: ['/users/login', '/users/register']
-  })
-);
-
-//全局接口生成一个sqlconn
-//并在接口最后关闭sqlconn
-app.use(
-  dbconn().unless({
-    path: []
-  })
-);
-
-//middlewares
-app.use(
-  bodyparser({
-    enableTypes: ['json', 'form', 'text']
-  })
-);
-app.use(json());
-app.use(logger());
-app.use(require('koa-static')(__dirname + '/public'));
-
-app.use(
-  views(__dirname + '/views', {
-    extension: 'pug'
   })
 );
 
