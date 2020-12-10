@@ -7,6 +7,7 @@ const UUID = require('node-uuid');
 const fs = require('fs');
 const mysql = require('mysql');
 const AppInfoParser = require('app-info-parser');
+const {version} = require('punycode');
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -27,6 +28,24 @@ const upload = multer({
 });
 
 router.prefix('/app');
+
+/**
+ * 获取指定app信息
+ */
+router.get('/', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const appId = qbody.appId;
+  const appInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where id=? and user_id=?',
+    [appId, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: appInDb.length > 0 ? appInDb[0] : null
+  };
+});
 
 /**
  * 获取app列表
@@ -225,9 +244,7 @@ router.post('/delete', async (ctx, next) => {
   const appId = qbody.appId;
   const deleteResult =
     ctx.state.user.type === 'admin'
-      ? await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app where id=?', [
-          appId,
-        ])
+      ? await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app where id=?', [appId])
       : await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app where id=? and user_id=?', [
           appId,
           ctx.state.user.id
@@ -305,19 +322,19 @@ router.post('/version/create', async (ctx, next) => {
  * 版本修改
  * vdesc
  * branch: alpha/beta/rc
- * verid
+ * verId
  */
 router.post('/version/update', async (ctx, next) => {
   const qbody = ctx.request.body;
   const updateResult = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'update app_version set vdesc=?, branch=? where id=? and user_id=?',
-    [qbody.vdesc, qbody.branch, qbody.verid, ctx.state.user.id]
+    [qbody.vdesc, qbody.branch, qbody.verId, ctx.state.user.id]
   );
   const verInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select * from app_version where id=? and user_id=?',
-    [qbody.verid, ctx.state.user.id]
+    [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {
     code: 200,
@@ -328,14 +345,14 @@ router.post('/version/update', async (ctx, next) => {
 
 /**
  * 版本删除
- * verid
+ * verId
  */
 router.post('/version/delete', async (ctx, next) => {
   const qbody = ctx.request.body;
   const updateResult = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'delete from app_version where id=? and user_id=?',
-    [qbody.verid, ctx.state.user.id]
+    [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {
     code: 200,
@@ -353,12 +370,30 @@ router.get('/version/list', async (ctx, next) => {
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select id, uuid, create_time as createTime, app_id, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=?',
-    [qbody.verid, ctx.state.user.id]
+    [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {
     code: 200,
     msg: 'ok',
     body: versionsInDb
+  };
+});
+
+/**
+ * 获取指定version信息
+ * verId
+ */
+router.get('/version', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const versionsInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where id=? and user_id=?',
+    [qbody.verId, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: versionsInDb.length > 0 ? versionsInDb[0] : null
   };
 });
 
