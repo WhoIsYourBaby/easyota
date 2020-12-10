@@ -179,7 +179,7 @@ async function createApp(conn, user, appInfo) {
     'insert into app (name, icon, short_link, adesc, platform, bundle_id, user_id) values (?, ?, ?, ?, ?, ?, ?)',
     [
       appInfo.name,
-      appInfo.iconUrl.replace(/\//g, '\/'),
+      appInfo.iconUrl,
       appInfo.short,
       appInfo.appDesc,
       appInfo.platform,
@@ -200,9 +200,9 @@ async function createApp(conn, user, appInfo) {
       appInfo.build,
       appInfo.verDesc,
       'dev',
-      appInfo.binUrl.replace(/\//g, '\/'),
+      appInfo.binUrl,
       appInfo.mainfest,
-      appInfo.iconUrl.replace(/\//g, '\/')
+      appInfo.iconUrl
     ]
   );
 }
