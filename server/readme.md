@@ -40,7 +40,7 @@
   - version
   - build
   - vdesc
-  - type(0:开发版 1:内测版 2:发布版)
+  - branch(alpha/beta/rc)
   - bin_url(oss/本地)
 
 - source(附件存储表，主要是一些截图+视频)

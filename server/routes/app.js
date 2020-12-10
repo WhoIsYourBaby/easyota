@@ -207,6 +207,15 @@ router.post('/update', async (ctx, next) => {
   };
 });
 
+
+/**
+ * 版本信息修改
+ * vdesc
+ * branch: alpha/beta/rc
+ */
+router.post('/version/update', async (ctx, next) => {
+});
+
 /**
  * 已经在外面判断app存在与否
  * @param {*} conn mysql链接
@@ -233,14 +242,14 @@ async function createApp(conn, user, appInfo) {
   const verUuid = UUID.v1().replace(/-/g, '');
   const verInsert = await dbhealper.makePromise(
     conn,
-    'insert into app_version (uuid, app_id, version, build, vdesc, type, bin_url, mainfest, icon) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon) values (?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
       appId,
       appInfo.version,
       appInfo.build,
       appInfo.verDesc,
-      'dev',
+      'alpha',
       appInfo.binUrl,
       appInfo.mainfest,
       appInfo.iconUrl
