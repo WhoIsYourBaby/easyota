@@ -25,7 +25,6 @@ router.post('/login', async (ctx, next) => {
       code: 200,
       msg: 'ok',
       body: {
-        id: us.id,
         email: us.email,
         nickname: us.nickname
       }
