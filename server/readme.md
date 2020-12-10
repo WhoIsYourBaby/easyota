@@ -42,6 +42,7 @@
   - vdesc
   - branch(alpha/beta/rc)
   - bin_url(oss/本地)
+  - mainfest(ios专用)
 
 - source(附件存储表，主要是一些截图+视频)
   - id
