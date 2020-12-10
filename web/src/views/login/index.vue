@@ -19,7 +19,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="Email"
           name="username"
           type="text"
           tabindex="1"
@@ -57,7 +57,7 @@
       </el-button>
 
       <div class="tips">
-        <span style="margin-right: 20px">username: ligun001@163.com</span>
+        <span style="margin-right: 20px">email: ligun001@163.com</span>
         <span>password: 5815057</span>
       </div>
     </el-form>

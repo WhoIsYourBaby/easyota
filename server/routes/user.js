@@ -30,7 +30,7 @@ router.post('/login', async (ctx, next) => {
       }
     };
   } else {
-    ctx.body = {code: 407, msg: '您没有相应权限', body: null};
+    ctx.body = {code: 403, msg: '登录失败，错误的用户名或密码', body: null};
   }
 });
 
