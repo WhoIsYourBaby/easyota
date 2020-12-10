@@ -28,6 +28,10 @@ const upload = multer({
 
 router.prefix('/app');
 
+/**
+ * 获取app列表
+ * 管理员获取全部app
+ */
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   let query;
@@ -47,7 +51,7 @@ router.get('/list', async (ctx, next) => {
 });
 
 /**
- * 上传app处理流程
+ * apk/ipa文件上传
  * 1、上传ipa/apk
  * 2、session保存上次上传的app，暂不存入数据库
  * 3、让前端用户填写基本信息提交
@@ -90,6 +94,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   if (platform === 'android') {
     appBody = {
       isNew: appInDb.length === 0 ? true : false,
+      appId: appInDb.length === 0 ? null : appInDb[0].id,
       icon: iconUrl,
       name: appinfo.application.label,
       bundle_id: appinfo.package,
@@ -99,6 +104,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   } else {
     appBody = {
       isNew: appInDb.length === 0 ? true : false,
+      appId: appInDb.length === 0 ? null : appInDb[0].id,
       icon: iconUrl,
       name: appinfo.CFBundleName,
       bundle_id: appinfo.CFBundleIdentifier,
@@ -162,6 +168,9 @@ router.post('/create', async (ctx, next) => {
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
   };
   await createApp(ctx.state.sqlconn, ctx.state.user, appSubmit);
+  ctx.session.iconUrl = undefined;
+  ctx.session.appPath = undefined;
+  ctx.session.appUrl = undefined;
   ctx.body = {
     code: 200,
     msg: 'ok'
@@ -173,14 +182,14 @@ router.post('/create', async (ctx, next) => {
  * name
  * adesc
  * short
- * appid
+ * appId
  */
 router.post('/update', async (ctx, next) => {
   const qbody = ctx.request.body;
   let appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select id from app where id=? and user_id=?',
-    [qbody.appid, ctx.state.user.id]
+    [qbody.appId, ctx.state.user.id]
   );
   if (appInDb.length === 0) {
     ctx.body = {
@@ -193,12 +202,12 @@ router.post('/update', async (ctx, next) => {
     qbody.name,
     qbody.adesc,
     qbody.short,
-    qbody.appid,
+    qbody.appId,
     ctx.state.user.id
   ]);
   appInDb = await dbhealper.makePromise(
     'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId from app where id=? and user_id=?;',
-    [qbody.appid, ctx.state.user.id]
+    [qbody.appId, ctx.state.user.id]
   );
   ctx.body = {
     code: 200,
@@ -207,9 +216,71 @@ router.post('/update', async (ctx, next) => {
   };
 });
 
+/**
+ * 新增版本
+ * 如果是新上传的app：app/upload->app/create
+ * 如果上传的app已经存在：app/upload->app/version/create
+ * vdesc
+ * branch
+ * appId
+ */
+router.post('/version/create', async (ctx, next) => {
+  let platform = 'unknown';
+  const appPath = ctx.session.appPath;
+  if (appPath.match('(.apk$)')) {
+    platform = 'android';
+  }
+  if (appPath.match('(.ipa$)')) {
+    platform = 'ios';
+  }
+  const parser = new AppInfoParser(appPath);
+  const parseResult = await parser.parse();
+  const version =
+    platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString;
+  const build = platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion;
+  const verUuid = UUID.v1().replace(/-/g, '');
+  const binUrl = ctx.session.appUrl;
+  const iconUrl = ctx.session.iconUrl;
+  const insertResult = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [
+      verUuid,
+      qbody.appId,
+      version,
+      build,
+      qbody.vdesc,
+      qbody.branch,
+      binUrl,
+      null,
+      iconUrl,
+      ctx.state.user.id
+    ]
+  );
+
+  ctx.session.iconUrl = undefined;
+  ctx.session.appPath = undefined;
+  ctx.session.appUrl = undefined;
+  ctx.body = {
+    code: 200,
+    msg: `${insertResult.affectedRows}条数据被创建`,
+    body: {
+      id: insertResult.insertId,
+      uuid: verUuid,
+      appId: qbody.appId,
+      version: version,
+      build: build,
+      vdesc: qbody.vdesc,
+      branch: qbody.branch,
+      binUrl: binUrl,
+      icon: iconUrl,
+      mainfest: null
+    }
+  };
+});
 
 /**
- * 版本信息修改
+ * 版本修改
  * vdesc
  * branch: alpha/beta/rc
  * verid
@@ -229,7 +300,44 @@ router.post('/version/update', async (ctx, next) => {
   ctx.body = {
     code: 200,
     msg: `${updateResult.affectedRows}条数据更新`,
-    body: (verInDb,length > 0 ? verInDb[0] : null)
+    body: (verInDb, length > 0 ? verInDb[0] : null)
+  };
+});
+
+/**
+ * 版本删除
+ * verid
+ */
+router.post('/version/delete', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const updateResult = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'delete from app_version where id=? and user_id=?',
+    [qbody.verid, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: `${updateResult.affectedRows}条数据被删除`
+  };
+});
+
+
+/**
+ * 获取指定app的version列表
+ * appId
+ */
+router.get('/version/list', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const appId = qbody.appId;
+  const versionsInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select id, uuid, create_time as createTime, app_id, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=?',
+    [qbody.verid, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: versionsInDb
   };
 });
 
@@ -262,7 +370,7 @@ async function createApp(conn, user, appInfo) {
     'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
-      appId,
+      createApp,
       appInfo.version,
       appInfo.build,
       appInfo.verDesc,
