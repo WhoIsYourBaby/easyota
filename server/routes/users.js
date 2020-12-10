@@ -1,3 +1,4 @@
+'use strict'
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const jwt = require('jsonwebtoken');

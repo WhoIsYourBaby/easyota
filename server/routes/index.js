@@ -1,3 +1,4 @@
+'use strict'
 const router = require('koa-router')();
 const mysql = require('mysql');
 const dbhealper = require('../utils/dbhealper');

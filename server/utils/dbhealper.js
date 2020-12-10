@@ -1,3 +1,4 @@
+'use strict'
 module.exports.makePromise = (connection, sql, arg) => {
   return new Promise((resolve, reject) => {
     connection.query(sql, arg, function(error, results) {

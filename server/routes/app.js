@@ -1,3 +1,4 @@
+'use strict'
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const multer = require('@koa/multer');
@@ -32,10 +33,10 @@ router.get('/list', async (ctx, next) => {
   let query;
   if (user.type === 'admin') {
     query =
-      'select id, create_time as createTime, name, icon, short, desc, platform, bundle_id as bundleId, user_id as userId from app;';
+      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app;';
   } else {
     query =
-      'select id, create_time as createTime, name, icon, short, desc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
+      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
   }
   const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
   ctx.body = {
@@ -69,7 +70,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     return;
   }
   const host = ctx.req.headers.host;
-  const protocol = !!ctx.req.connection.encrypted ? 'https:\/\/' : 'http:\/\/';
+  const protocol = !!ctx.req.connection.encrypted ? 'https://' : 'http://';
   const domain = protocol + host;
   const appPath = ctx.file.path;
   const parser = new AppInfoParser(appPath);
@@ -121,7 +122,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
  * name
  */
 router.post('/create', async (ctx, next) => {
-  const testurl = ctx.session.iconUrl.replace(/\//g, '\/');
+  const testurl = ctx.session.iconUrl.replace(/\//g, '/');
   const qbody = ctx.request.body;
   let platform = 'unknown';
   const appPath = ctx.session.appPath;
@@ -156,7 +157,8 @@ router.post('/create', async (ctx, next) => {
     binUrl: ctx.session.appUrl,
     bundleId: bundleId,
     platform: platform,
-    version: platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
+    version:
+      platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
   };
   await createApp(ctx.state.sqlconn, ctx.state.user, appSubmit);
@@ -166,16 +168,43 @@ router.post('/create', async (ctx, next) => {
   };
 });
 
-
 /**
  * 修改app信息
  * name
  * adesc
  * short
+ * appid
  */
 router.post('/update', async (ctx, next) => {
   const qbody = ctx.request.body;
-
+  let appInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select id from app where id=? and user_id=?',
+    [qbody.appid, ctx.state.user.id]
+  );
+  if (appInDb.length === 0) {
+    ctx.body = {
+      code: 500,
+      msg: '该App不存在或者不属于你'
+    };
+    return;
+  }
+  await dbhealper.makePromise('update app set name=?, adesc=?, short=? where id=? and user_id=?', [
+    qbody.name,
+    qbody.adesc,
+    qbody.short,
+    qbody.appid,
+    ctx.state.user.id
+  ]);
+  appInDb = await dbhealper.makePromise(
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId from app where id=? and user_id=?;',
+    [qbody.appid, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: appInDb[0]
+  };
 });
 
 /**
