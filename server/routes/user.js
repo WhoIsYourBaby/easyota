@@ -3,7 +3,7 @@ const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const jwt = require('jsonwebtoken');
 
-router.prefix('/users');
+router.prefix('/user');
 
 router.post('/login', async (ctx, next) => {
   const qbody = ctx.request.body;
