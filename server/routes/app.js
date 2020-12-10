@@ -217,6 +217,28 @@ router.post('/update', async (ctx, next) => {
 });
 
 /**
+ * 删除app
+ * appId
+ */
+router.post('/delete', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const appId = qbody.appId;
+  const deleteResult =
+    ctx.state.user.type === 'admin'
+      ? await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app where id=?', [
+          appId,
+        ])
+      : await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app where id=? and user_id=?', [
+          appId,
+          ctx.state.user.id
+        ]);
+  ctx.body = {
+    code: 200,
+    msg: `${deleteResult.affectedRows}条数据被删除`
+  };
+});
+
+/**
  * 新增版本
  * 如果是新上传的app：app/upload->app/create
  * 如果上传的app已经存在：app/upload->app/version/create
@@ -320,7 +342,6 @@ router.post('/version/delete', async (ctx, next) => {
     msg: `${updateResult.affectedRows}条数据被删除`
   };
 });
-
 
 /**
  * 获取指定app的version列表
