@@ -10,7 +10,7 @@ const koajwt = require('koa-jwt');
 const session = require("koa-session2");
 
 const index = require('./routes/index');
-const users = require('./routes/users');
+const user = require('./routes/user');
 const appRoute = require('./routes/app');
 
 const dbconn = require('./middle/dbconn');
@@ -74,13 +74,13 @@ app.use(
   koajwt({
     secret: tokenKey
   }).unless({
-    path: ['/users/login', '/users/register']
+    path: ['/user/login', '/user/register']
   })
 );
 
 // routes
 app.use(index.routes(), index.allowedMethods());
-app.use(users.routes(), users.allowedMethods());
+app.use(user.routes(), user.allowedMethods());
 app.use(appRoute.routes(), appRoute.allowedMethods());
 
 // error-handling
