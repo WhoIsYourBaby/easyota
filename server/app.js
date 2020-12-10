@@ -7,6 +7,7 @@ const bodyparser = require('koa-bodyparser');
 const logger = require('koa-logger');
 const cors = require('koa2-cors');
 const koajwt = require('koa-jwt');
+const session = require("koa-session2");
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -44,6 +45,9 @@ app.use(json());
 app.use(logger());
 const publicPath = __dirname + '/public';
 app.use(require('koa-static')(publicPath));
+app.use(session({
+  key: "SESSIONID",
+}));
 
 app.use(
   views(__dirname + '/views', {

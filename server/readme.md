@@ -30,18 +30,9 @@
   - icon
   - short_link
   - desc
-  - platform
-  - bundleid
+  - platform(ios/android)
+  - bundle_id
 
-
-- source(附件存储表)
-  - id
-  - create_time
-  - app_id(关联对应app，可空)
-  - url
-  - store(ali/qiniu/tencent/local)
-  - type(pic/video/ipa/apk/...)
-  
 - app_version
   - id
   - create_time
@@ -51,6 +42,15 @@
   - desc
   - type(0:开发版 1:内测版 2:发布版)
   - bin_url(oss/本地)
+
+- source(附件存储表，主要是一些截图+视频)
+  - id
+  - create_time
+  - app_id(关联对应app，可空)
+  - url
+  - store(ali/qiniu/tencent/local)
+  - type(pic/video/ipa/apk/...)
+  
 
 
 

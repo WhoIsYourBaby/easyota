@@ -42,9 +42,16 @@ router.get('/list', async (ctx, next) => {
   };
 });
 
+/**
+ * 上传app处理流程
+ * 1、上传ipa/apk
+ * 2、session保存上次上传的app，暂不存入数据库
+ * 3、让前端用户填写基本信息提交
+ * 4、收到用户提交的基本信息并结合之前session保存的app二进制解析
+ * 5、完成app+版本的入库
+ */
 router.post('/upload', upload.single('file'), async (ctx, next) => {
   console.log('ctx.file', ctx.file);
-  const match = ctx.file.filename.match('(.apk$)|(.ipa$)');
   let platform = -1;
   if (ctx.file.filename.match('(.apk$)')) {
     platform = 0; //android
@@ -59,31 +66,66 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     };
     return;
   }
-  const path = ctx.file.path;
-  const parser = new AppInfoParser(path);
+  const appPath = ctx.file.path;
+  const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
-  let handleResult;
+  const iconPath = saveIcon(appinfo.icon);
+  ctx.session.appPath = appPath;
+  ctx.session.iconPath = iconPath;
+  let appBody;
   if (platform === 0) {
-    handleResult = await handleAndroid(ctx.state.sqlconn, ctx.state.user, appinfo);
+    appBody = {
+      icon: iconPath,
+      name: appinfo.application.label,
+      bundle_id: appinfo.package,
+      version: appinfo.versionName,
+      build: appinfo.versionCode
+    };
   } else {
-    handleResult = await handleIos(ctx.state.sqlconn, ctx.state.user, appinfo);
+    appBody = {
+      icon: iconPath,
+      name: appinfo.CFBundleName,
+      bundle_id: appinfo.CFBundleIdentifier,
+      version: appinfo.CFBundleShortVersionString,
+      build: appinfo.CFBundleVersion
+    };
   }
   ctx.body = {
     code: 200,
     msg: 'ok',
-    body: handleResult
+    body: appBody
   };
 });
 
 async function handleIos(conn, user, appinfo) {
-  //0 判断是否已经存在
+  //0 判断app是否已经存在
   const bundleId = appinfo.CFBundleIdentifier;
   const version = appinfo.CFBundleShortVersionString;
   const build = appinfo.CFBundleVersion;
+  const name = appinfo.CFBundleName;
   //处理图片
   const iconData = appinfo.icon;
   const iconPath = saveIcon(iconData);
-  //1 如果已经存在则升级
+  const ifAppExist =
+    'select id, name, icon, platform, bundle_id, user_id, desc, short_link from app where bundle_id=?';
+  const apps = await dbhealper.makePromise(conn, ifAppExist, [bundleId]);
+  let app = {};
+  if (apps.length === 0) {
+    const appInsert = await dbhealper.makePromise(
+      conn,
+      'insert into app (name, icon, platform, bundle_id, user_id) values (?, ?, ?, ?, ?)',
+      [name, iconPath, 'ios', bundleId, user.id]
+    );
+    app.id = appInsert.insertId;
+    app.bundle_id = bundleId;
+    app.platform = 'ios';
+    app.user_id = user.id;
+    app.icon = iconPath;
+    app.name = name;
+  } else {
+    app = apps[0];
+  }
+  //1 在app上
   //2 如果不存在则新生成app+版本
   // const insert = '';
   // const apps = await dbhealper.makePromise(conn, query, [user.id]);
@@ -94,18 +136,20 @@ async function handleAndroid(conn, user, appinfo) {
   return {};
 }
 
+
+//返回file的相对域名的路径
 function saveIcon(iconData) {
   var base64Data = iconData.replace(/^data:image\/\w+;base64,/, '');
   var dataBuffer = new Buffer(base64Data, 'base64');
-  let filename = UUID.v1().replace(/-/g, '') + '.png';
-  let fpath = path.join(__dirname, '../public/upload');
+  let filename = '/upload/' + UUID.v1().replace(/-/g, '') + '.png';
+  let fpath = path.join(__dirname, '../public');
   fpath = path.join(fpath, filename);
   fs.writeFile(fpath, dataBuffer, function (err) {
     if (err) {
       console.log(err);
     }
   });
-  return fpath;
+  return filename;
 }
 
 module.exports = router;
