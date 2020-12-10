@@ -28,7 +28,7 @@
   - create_time
   - name
   - icon
-  - short_link
+  - short
   - adesc
   - platform(ios/android)
   - bundle_id

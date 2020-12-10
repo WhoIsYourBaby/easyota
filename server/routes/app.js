@@ -32,10 +32,10 @@ router.get('/list', async (ctx, next) => {
   let query;
   if (user.type === 'admin') {
     query =
-      'select id, create_time as createTime, name, icon, short_link as shortLink, desc, platform, bundle_id as bundleId, user_id as userId from app;';
+      'select id, create_time as createTime, name, icon, short, desc, platform, bundle_id as bundleId, user_id as userId from app;';
   } else {
     query =
-      'select id, create_time as createTime, name, icon, short_link as shortLink, desc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
+      'select id, create_time as createTime, name, icon, short, desc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
   }
   const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
   ctx.body = {
@@ -166,6 +166,18 @@ router.post('/create', async (ctx, next) => {
   };
 });
 
+
+/**
+ * 修改app信息
+ * name
+ * adesc
+ * short
+ */
+router.post('/update', async (ctx, next) => {
+  const qbody = ctx.request.body;
+
+});
+
 /**
  * 已经在外面判断app存在与否
  * @param {*} conn mysql链接
@@ -176,7 +188,7 @@ async function createApp(conn, user, appInfo) {
   //1、先创建app
   const appInsert = await dbhealper.makePromise(
     conn,
-    'insert into app (name, icon, short_link, adesc, platform, bundle_id, user_id) values (?, ?, ?, ?, ?, ?, ?)',
+    'insert into app (name, icon, short, adesc, platform, bundle_id, user_id) values (?, ?, ?, ?, ?, ?, ?)',
     [
       appInfo.name,
       appInfo.iconUrl,
