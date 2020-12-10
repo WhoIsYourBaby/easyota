@@ -65,7 +65,6 @@ router.post('/register', async (ctx, next) => {
       code: 200,
       msg: '注册成功',
       body: {
-        id: insertResult.insertId,
         email: email,
         nickname: nickname
       }
