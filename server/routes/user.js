@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const jwt = require('jsonwebtoken');
@@ -33,6 +33,20 @@ router.post('/login', async (ctx, next) => {
   } else {
     ctx.body = {code: 403, msg: '登录失败，错误的用户名或密码', body: null};
   }
+});
+
+router.get('/', async (ctx, next) => {
+  const uid = ctx.state.user.id;
+  const userInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select email, nickname from user where id=?',
+    [uid]
+  );
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: userInDb.length > 0 ? userInDb[0] : null
+  };
 });
 
 router.post('/register', async (ctx, next) => {
