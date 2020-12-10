@@ -30,9 +30,11 @@ router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   let query;
   if (user.type === 'admin') {
-    query = 'select * from app;';
+    query =
+      'select id, create_time as createTime, name, icon, short_link as shortLink, desc, platform, bundle_id as bundleId, user_id as userId from app;';
   } else {
-    query = 'select * from app where user_id=?';
+    query =
+      'select id, create_time as createTime, name, icon, short_link as shortLink, desc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
   }
   const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
   ctx.body = {
@@ -101,6 +103,26 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   };
 });
 
+/**
+ * 根据upload接口返回的信息再次补完app版本数据
+ * appDesc
+ * verDesc
+ * short
+ * name
+ */
+router.post('/create', async (ctx, next) => {
+  const qbody = ctx.req.body;
+  const appDesc = qbody.appDesc;
+  const verDesc = qbody.verDesc;
+  const short = qbody.short;
+  const name = qbody.name;
+  const appPath = ctx.session.appPath;
+  const iconUrl = ctx.session.iconUrl;
+  const appSubmit = {
+    appDesc
+  };
+});
+
 async function handleIos(conn, user, appinfo) {
   //0 判断app是否已经存在
   const bundleId = appinfo.CFBundleIdentifier;
@@ -110,9 +132,11 @@ async function handleIos(conn, user, appinfo) {
   //处理图片
   const iconData = appinfo.icon;
   const iconPath = saveIcon(iconData);
-  const ifAppExist =
-    'select id, name, icon, platform, bundle_id, user_id, desc, short_link from app where bundle_id=?';
-  const apps = await dbhealper.makePromise(conn, ifAppExist, [bundleId]);
+  const apps = await dbhealper.makePromise(
+    conn,
+    'select id, name, icon, platform, bundle_id as bundleId, user_id as userId, desc, short_link as shortLink from app where bundle_id=?',
+    [bundleId]
+  );
   let app = {};
   if (apps.length === 0) {
     const appInsert = await dbhealper.makePromise(
@@ -121,9 +145,9 @@ async function handleIos(conn, user, appinfo) {
       [name, iconPath, 'ios', bundleId, user.id]
     );
     app.id = appInsert.insertId;
-    app.bundle_id = bundleId;
+    app.bundleId = bundleId;
     app.platform = 'ios';
-    app.user_id = user.id;
+    app.userId = user.id;
     app.icon = iconPath;
     app.name = name;
   } else {
@@ -139,7 +163,6 @@ async function handleIos(conn, user, appinfo) {
 async function handleAndroid(conn, user, appinfo) {
   return {};
 }
-
 
 //返回file的相对域名的路径
 function saveIcon(iconData) {

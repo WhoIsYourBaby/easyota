@@ -20,11 +20,15 @@ router.post('/login', async (ctx, next) => {
     };
     const token = jwt.sign(payload, 'easyota0');
     ctx.set('Authorization', 'Bearer ' + token);
-    ctx.body = {code: 200, msg: 'ok', body: {
-      id: us.id,
-      email: us.email,
-      nickname: us.nickname,
-    }};
+    ctx.body = {
+      code: 200,
+      msg: 'ok',
+      body: {
+        id: us.id,
+        email: us.email,
+        nickname: us.nickname
+      }
+    };
   } else {
     ctx.body = {code: 407, msg: '您没有相应权限', body: null};
   }
@@ -42,10 +46,15 @@ router.post('/register', async (ctx, next) => {
   } else {
     const type = 'user';
     const insert = 'insert into user (email, password, nickname, type) values (?, ?, ?, ?)';
-    const prom = await dbhealper.makePromise(ctx.state.sqlconn, insert, [email, password, nickname, type]);
+    const insertResult = await dbhealper.makePromise(ctx.state.sqlconn, insert, [
+      email,
+      password,
+      nickname,
+      type
+    ]);
     const payload = {
       exp: Date.now() + 1000 * 60 * 60 * 24 * 7,
-      id: prom.insertId,
+      id: insertResult.insertId,
       type: type,
       email: email
     };
@@ -55,7 +64,7 @@ router.post('/register', async (ctx, next) => {
       code: 200,
       msg: '注册成功',
       body: {
-        id: prom.insertId,
+        id: insertResult.insertId,
         email: email,
         nickname: nickname
       }
@@ -66,7 +75,7 @@ router.post('/register', async (ctx, next) => {
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   if (user.type === 'admin') {
-    const chaptersQuery = 'select id, create_time, email, nickname, type from user;';
+    const chaptersQuery = 'select id, create_time as createTime, email, nickname, type from user;';
     const users = await dbhealper.makePromise(ctx.state.sqlconn, chaptersQuery);
     ctx.body = {
       code: 200,
