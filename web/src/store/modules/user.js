@@ -34,8 +34,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({email: username.trim(), password: password})
         .then(response => {
-          const {data} = response;
-          const token = response.headers.Authorization;
+          const token = response.headers.authorization;
+          console.log(token);
           commit('SET_TOKEN', token);
           setToken(token);
           resolve();

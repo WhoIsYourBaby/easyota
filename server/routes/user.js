@@ -20,7 +20,8 @@ router.post('/login', async (ctx, next) => {
       email: us.email
     };
     const token = jwt.sign(payload, 'easyota0');
-    ctx.set('Authorization', 'Bearer ' + token);
+    ctx.set('authorization', 'Bearer ' + token);
+    ctx.set('Access-Control-Expose-Headers', 'authorization');
     ctx.body = {
       code: 200,
       msg: 'ok',
@@ -59,7 +60,7 @@ router.post('/register', async (ctx, next) => {
       email: email
     };
     const token = jwt.sign(payload, 'easyota0');
-    ctx.set('Authorization', 'Bearer ' + token);
+    ctx.set('authorization', 'Bearer ' + token);
     ctx.body = {
       code: 200,
       msg: '注册成功',
