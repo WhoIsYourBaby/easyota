@@ -70,12 +70,16 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
   const iconPath = saveIcon(appinfo.icon);
+  const iconUrl = path.join(domain, iconPath);
   ctx.session.appPath = appPath;
-  ctx.session.iconPath = iconPath;
+  ctx.session.iconUrl = iconUrl;
   let appBody;
+  const host = ctx.req.headers.host;
+  const protocol = !!ctx.req.connection.encrypted ? 'https://' : 'http://';
+  const domain = protocol + host;
   if (platform === 0) {
     appBody = {
-      icon: iconPath,
+      icon: iconUrl,
       name: appinfo.application.label,
       bundle_id: appinfo.package,
       version: appinfo.versionName,
@@ -83,7 +87,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     };
   } else {
     appBody = {
-      icon: iconPath,
+      icon: iconUrl,
       name: appinfo.CFBundleName,
       bundle_id: appinfo.CFBundleIdentifier,
       version: appinfo.CFBundleShortVersionString,
