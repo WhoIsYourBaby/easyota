@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const multer = require('@koa/multer');
@@ -216,6 +216,21 @@ router.post('/update', async (ctx, next) => {
  */
 router.post('/version/update', async (ctx, next) => {
   const qbody = ctx.request.body;
+  const updateResult = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'update app_version set vdesc=?, branch=? where id=? and user_id=?',
+    [qbody.vdesc, qbody.branch, qbody.verid, ctx.state.user.id]
+  );
+  const verInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select * from app_version where id=? and user_id=?',
+    [qbody.verid, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: `${updateResult.affectedRows}条数据更新`,
+    body: (verInDb,length > 0 ? verInDb[0] : null)
+  };
 });
 
 /**
