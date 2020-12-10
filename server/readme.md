@@ -22,14 +22,14 @@
   - secret
   - type(账号类型：admin/user/guest)
 
-- app(支持3个视频10张截图)
+- app(支持3个视频10张截图，desc与关键字冲突)
   - id
   - uuid
   - create_time
   - name
   - icon
   - short_link
-  - desc
+  - adesc
   - platform(ios/android)
   - bundle_id
 
@@ -39,7 +39,7 @@
   - app_id
   - version
   - build
-  - desc
+  - vdesc
   - type(0:开发版 1:内测版 2:发布版)
   - bin_url(oss/本地)
 
