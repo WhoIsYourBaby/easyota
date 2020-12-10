@@ -40,7 +40,7 @@
           name="password"
           tabindex="2"
           auto-complete="on"
-          @keyup.enter.native="handleLogin"
+          @keyup.enter.native="onLogin"
         />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
@@ -51,7 +51,7 @@
         :loading="loading"
         type="primary"
         style="width: 100%; margin-bottom: 30px"
-        @click.native.prevent="handleLogin"
+        @click.native.prevent="onLogin"
       >
         Login
       </el-button>
@@ -117,7 +117,7 @@ export default {
         this.$refs.password.focus();
       });
     },
-    handleLogin() {
+    onLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true;
