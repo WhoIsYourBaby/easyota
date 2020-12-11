@@ -33,7 +33,7 @@ export default {
   components: {SidebarItem, Logo},
   computed: {
     ...mapState({
-      app: (state) => state.app
+      settings: (state) => state.settings
     }),
     routes() {
       return this.$router.options.routes;
@@ -54,7 +54,7 @@ export default {
       return variables;
     },
     isCollapse() {
-      return !this.app.sidebar.opened;
+      return !this.settings.sidebar.opened;
     }
   }
 };

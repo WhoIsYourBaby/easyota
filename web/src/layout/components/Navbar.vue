@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <hamburger
-      :is-active="app.sidebar.opened"
+      :is-active="settings.sidebar.opened"
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
@@ -46,7 +46,7 @@ export default {
   computed: {
     ...mapState({
       user: (state) => state.user,
-      app: (state) => state.app
+      settings: (state) => state.settings
     })
   },
   methods: {
