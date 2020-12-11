@@ -1,23 +1,35 @@
 import request from '@/utils/request'
 
-export function login(data) {
-  return request({
-    url: '/user/login',
-    method: 'post',
-    data
-  })
-}
 
-export function getInfo() {
-  return request({
-    url: '/user',
-    method: 'get',
-  })
-}
+const user = {
+  /**
+   * 
+   * @param {email, password} data 
+   */
+  login(data) {
+    return request({
+      url: '/user/login',
+      method: 'post',
+      data
+    })
+  },
+  getUser() {
+    return request({
+      url: '/user',
+      method: 'get',
+    })
+  },
+  /**
+   * 注册
+   * @param {email, password, avatar, nickname} data 
+   */
+  register(data) {
+    return request({
+      url: '/user/register',
+      method: 'post',
+      data
+    });
+  }
+};
 
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
-}
+export default user;
