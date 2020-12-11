@@ -1,8 +1,8 @@
 import { getToken } from "@/utils/auth"
 
 const getters = {
-  sidebar: state => state.app.sidebar,
-  device: state => state.app.device,
+  sidebar: state => state.settings.sidebar,
+  device: state => state.settings.device,
   token: state => getToken(),
 }
 export default getters
