@@ -39,7 +39,7 @@ router.get('/', async (ctx, next) => {
   const uid = ctx.state.user.id;
   const userInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select email, nickname from user where id=?',
+    'select email, nickname, avatar from user where id=?',
     [uid]
   );
   ctx.body = {
@@ -54,18 +54,23 @@ router.post('/register', async (ctx, next) => {
   const email = qbody.email;
   const password = qbody.password;
   const nickname = qbody.nickname;
+  const host = ctx.req.headers.host;
+  const protocol = !!ctx.req.connection.encrypted ? 'https://' : 'http://';
+  const domain = protocol + host;
+  const avatar = qbody.avatar || (domain + '/user/avatar.png');
   const query = 'select * from user where email=?;';
   const users = await dbhealper.makePromise(ctx.state.sqlconn, query, [email]);
   if (users.length > 0) {
     ctx.body = {code: 500, msg: '该邮箱地址已被他人注册', body: null};
   } else {
     const type = 'user';
-    const insert = 'insert into user (email, password, nickname, type) values (?, ?, ?, ?)';
+    const insert = 'insert into user (email, password, nickname, type, avatar) values (?, ?, ?, ?, ?)';
     const insertResult = await dbhealper.makePromise(ctx.state.sqlconn, insert, [
       email,
       password,
       nickname,
-      type
+      type,
+      avatar,
     ]);
     const payload = {
       exp: Date.now() + 1000 * 60 * 60 * 24 * 7,
@@ -89,7 +94,7 @@ router.post('/register', async (ctx, next) => {
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   if (user.type === 'admin') {
-    const chaptersQuery = 'select id, create_time as createTime, email, nickname, type from user;';
+    const chaptersQuery = 'select id, create_time as createTime, email, nickname, type, avatar from user;';
     const users = await dbhealper.makePromise(ctx.state.sqlconn, chaptersQuery);
     ctx.body = {
       code: 200,
