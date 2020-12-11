@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     email: '',
     nickname: '',
-    avatar: ''
+    avatar: '',
+    type: ''
   };
 };
 
@@ -39,8 +40,6 @@ const actions = {
         .login({email: username.trim(), password: password})
         .then(response => {
           const token = response.headers.authorization;
-          console.log(token);
-          commit('SET_TOKEN', token);
           commit('SET_USER', response.data.body);
           setToken(token);
           resolve(response);

@@ -56,10 +56,10 @@
         Login
       </el-button>
 
-      <div class="tips">
+      <!-- <div class="tips">
         <span style="margin-right: 20px">email: ligun001@163.com</span>
         <span>password: 5815057</span>
-      </div>
+      </div> -->
     </el-form>
   </div>
 </template>
@@ -86,8 +86,8 @@ export default {
     };
     return {
       loginForm: {
-        username: null,
-        password: null
+        username: 'ligun006@163.com',
+        password: '5815057'
       },
       loginRules: {
         username: [{required: true, trigger: 'blur', validator: validateUsername}],

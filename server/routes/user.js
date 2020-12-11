@@ -27,7 +27,9 @@ router.post('/login', async (ctx, next) => {
       msg: 'ok',
       body: {
         email: us.email,
-        nickname: us.nickname
+        nickname: us.nickname,
+        type: us.type,
+        avatar: us.avatar,
       }
     };
   } else {
@@ -39,7 +41,7 @@ router.get('/', async (ctx, next) => {
   const uid = ctx.state.user.id;
   const userInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select email, nickname, avatar from user where id=?',
+    'select email, nickname, avatar, type from user where id=?',
     [uid]
   );
   ctx.body = {
@@ -85,7 +87,9 @@ router.post('/register', async (ctx, next) => {
       msg: '注册成功',
       body: {
         email: email,
-        nickname: nickname
+        nickname: nickname,
+        type: type,
+        avatar: avatar
       }
     };
   }
