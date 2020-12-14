@@ -426,7 +426,7 @@ async function createApp(conn, user, appInfo) {
     'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
-      createApp,
+      appId,
       appInfo.version,
       appInfo.build,
       appInfo.verDesc,
