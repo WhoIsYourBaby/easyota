@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import Router from 'vue-router';
+import Router from 'vue-router';`Z`
 
 Vue.use(Router);
 

@@ -91,7 +91,7 @@ export default {
               path: `/app/${e.id}`,
               name: e.name,
               component: () => import('@/views/app/index'),
-              meta: {title: e.name, icon: 'form'}
+              meta: {title: e.name, icon: e.icon, app: true, platform: e.platform}
             }
           ]
         };
