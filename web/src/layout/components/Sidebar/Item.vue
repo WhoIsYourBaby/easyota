@@ -1,10 +1,14 @@
 <template>
-  <div v-if="platform == null">
-    <svg-icon :icon-class="icon" />
-    <span slot="title">{{ title }}</span>
+  <div v-if="meta.app !== true">
+    <svg-icon :icon-class="meta.icon" />
+    <span slot="title">{{ meta.title }}</span>
   </div>
-  <div v-else>
-    
+  <div v-else class="app-layout">
+    <el-image style="width: 32px; height: 32px; margin-right: 12px;" :src="meta.icon" fit="fill"></el-image>
+    <div>
+      <div style="line-height: 20px">{{meta.title}}</div>
+      <div style="line-height: 20px; font-size: 12px; color: grey;">{{platformStr(meta.platform)}}</div>
+    </div>
   </div>
 </template>
 
@@ -13,36 +17,23 @@
 export default {
   name: 'MenuItem',
   props: {
-    icon: {
-      type: String,
-      default: ''
-    },
-    title: {
-      type: String,
-      default: ''
-    },
-    platform: {
-      type: String,
+    meta: {
+      type: Object,
       default: null
     }
-  }
-  // render(h, context) {
-  //   const {icon, title} = context.props;
-  //   const vnodes = [];
-
-  //   if (icon) {
-  //     if (icon.includes('el-icon')) {
-  //       vnodes.push(<i class={[icon, 'sub-el-icon']} />);
-  //     } else {
-  //       vnodes.push(<svg-icon icon-class={icon} />);
-  //     }
-  //   }
-
-  //   if (title) {
-  //     vnodes.push(<span slot="title">{title}</span>);
-  //   }
-  //   return vnodes;
-  // }
+  },
+  created() {
+    console.log(this.meta);
+  },
+  methods: {
+    platformStr(platform) {
+      if (platform === 'ios') {
+        return 'iOS';
+      } else {
+        return 'Android';
+      }
+    }
+  },
 };
 </script>
 
@@ -52,4 +43,11 @@ export default {
   width: 1em;
   height: 1em;
 }
+
+.app-layout {
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+}
+
 </style>

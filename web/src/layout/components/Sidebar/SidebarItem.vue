@@ -12,10 +12,7 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{'submenu-title-noDropdown': !isNest}"
         >
-          <item
-            :icon="onlyOneChild.meta.icon || (item.meta && item.meta.icon)"
-            :title="onlyOneChild.meta.title"
-          />
+          <item :meta="onlyOneChild.meta || item.meta"/>
         </el-menu-item>
       </app-link>
     </template>
