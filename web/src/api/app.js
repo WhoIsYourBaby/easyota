@@ -1,10 +1,10 @@
 import request from '@/utils/request';
 
 const app = {
-  getList() {
+  fetchList() {
     return request({
       url: '/app/list',
-      method: '',
+      method: 'get',
     });
   }
 };

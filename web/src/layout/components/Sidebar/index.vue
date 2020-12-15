@@ -18,6 +18,13 @@
           :item="route"
           :base-path="route.path"
         />
+        <el-divider></el-divider>
+        <sidebar-item
+          v-for="route in transformToRoutes(appList)"
+          :key="route.path"
+          :item="route"
+          :base-path="route.path"
+        />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -28,9 +35,16 @@ import {mapGetters, mapState} from 'vuex';
 import Logo from './Logo';
 import SidebarItem from './SidebarItem';
 import variables from '@/styles/variables.scss';
+import apiApp from '@/api/app';
+import Layout from '@/layout';
 
 export default {
   components: {SidebarItem, Logo},
+  data() {
+    return {
+      appList: []
+    };
+  },
   computed: {
     ...mapState({
       settings: (state) => state.settings
@@ -55,6 +69,34 @@ export default {
     },
     isCollapse() {
       return !this.settings.sidebar.opened;
+    }
+  },
+  created() {
+    this.fetchAppList();
+  },
+  methods: {
+    fetchAppList() {
+      apiApp.fetchList().then((resp) => {
+        this.appList = resp.data.body;
+      });
+    },
+    transformToRoutes(appList) {
+      console.log(appList);
+      const routes = appList.map((e) => {
+        return {
+          path: `/app/${e.id}`,
+          component: Layout,
+          children: [
+            {
+              path: `/app/${e.id}`,
+              name: e.name,
+              component: () => import('@/views/app/index'),
+              meta: {title: e.name, icon: 'form'}
+            }
+          ]
+        };
+      });
+      return routes;
     }
   }
 };
