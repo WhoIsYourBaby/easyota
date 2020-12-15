@@ -7,7 +7,7 @@
     <el-image style="width: 32px; height: 32px; margin-right: 12px;" :src="meta.icon" fit="fill"></el-image>
     <div>
       <div style="line-height: 20px">{{meta.title}}</div>
-      <div style="line-height: 20px; font-size: 12px; color: grey;">{{platformStr(meta.platform)}}</div>
+      <div style="line-height: 20px; font-size: 13px; color: grey;">{{platformStr(meta.platform)}}</div>
     </div>
   </div>
 </template>

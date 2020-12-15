@@ -33,7 +33,7 @@ router.prefix('/app');
  * 获取指定app信息
  */
 router.get('/', async (ctx, next) => {
-  const qbody = ctx.request.body;
+  const qbody = ctx.request.query;
   const appId = qbody.appId;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
@@ -365,12 +365,12 @@ router.post('/version/delete', async (ctx, next) => {
  * appId
  */
 router.get('/version/list', async (ctx, next) => {
-  const qbody = ctx.request.body;
+  const qbody = ctx.request.query;
   const appId = qbody.appId;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select id, uuid, create_time as createTime, app_id, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=?',
-    [qbody.verId, ctx.state.user.id]
+    [appId, ctx.state.user.id]
   );
   ctx.body = {
     code: 200,
@@ -384,7 +384,7 @@ router.get('/version/list', async (ctx, next) => {
  * verId
  */
 router.get('/version', async (ctx, next) => {
-  const qbody = ctx.request.body;
+  const qbody = ctx.request.query;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where id=? and user_id=?',
