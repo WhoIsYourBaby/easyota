@@ -17,18 +17,6 @@ export default {
       default: null
     }
   },
-  created() {
-    console.log(this.meta);
-  },
-  methods: {
-    platformStr(platform) {
-      if (platform === 'ios') {
-        return 'iOS';
-      } else {
-        return 'Android';
-      }
-    }
-  }
 };
 </script>
 

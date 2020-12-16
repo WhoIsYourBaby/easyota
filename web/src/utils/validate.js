@@ -17,3 +17,11 @@ export function isExternal(path) {
 export function validUsername(str) {
   return (str || '').length >= 5;
 }
+
+export function platformString(platform) {
+  if (platform === 'ios') {
+    return 'iOS';
+  } else {
+    return 'Android';
+  }
+}

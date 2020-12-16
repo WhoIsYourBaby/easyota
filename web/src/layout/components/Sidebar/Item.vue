@@ -12,7 +12,7 @@
     <div>
       <div style="line-height: 20px">{{ meta.title }}</div>
       <div style="line-height: 20px; font-size: 13px; color: grey">
-        {{ platformStr(meta.platform) }}
+        {{ platform(meta.platform) }}
       </div>
     </div>
   </div>
@@ -20,6 +20,7 @@
 
 
 <script>
+import { platformString } from "@/utils/validate";
 export default {
   name: 'MenuItem',
   props: {
@@ -28,16 +29,9 @@ export default {
       default: null
     }
   },
-  created() {
-    console.log(this.meta);
-  },
   methods: {
-    platformStr(platform) {
-      if (platform === 'ios') {
-        return 'iOS';
-      } else {
-        return 'Android';
-      }
+    platform(str) {
+      return platformString(str);
     }
   }
 };

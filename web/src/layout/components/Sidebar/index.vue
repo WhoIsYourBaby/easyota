@@ -83,7 +83,6 @@ export default {
       });
     },
     transformToRoutes(appList) {
-      console.log(appList);
       const routes = appList.map((e) => {
         return {
           path: `/app/${e.id}`,
