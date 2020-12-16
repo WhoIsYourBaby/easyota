@@ -1,20 +1,9 @@
 <template>
-  <div v-if="meta.app !== true">
+  <div v-if="meta.app !== true" class="app-layout">
     <svg-icon :icon-class="meta.icon" />
-    <span>{{ meta.title }}</span>
   </div>
   <div v-else class="app-layout">
-    <el-image
-      style="width: 32px; height: 32px; margin-right: 12px"
-      :src="meta.icon"
-      fit="fill"
-    ></el-image>
-    <div>
-      <div style="line-height: 20px">{{ meta.title }}</div>
-      <div style="line-height: 20px; font-size: 13px; color: grey">
-        {{ platformStr(meta.platform) }}
-      </div>
-    </div>
+    <el-image style="width: 32px; height: 32px" :src="meta.icon" fit="fill"></el-image>
   </div>
 </template>
 
@@ -44,9 +33,6 @@ export default {
 </script>
 
 <style scoped>
-.svg-icon {
-  margin-right: 12px;
-}
 .sub-el-icon {
   color: currentColor;
   width: 1em;
@@ -56,7 +42,7 @@ export default {
 .app-layout {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 100%;
 }
 </style>

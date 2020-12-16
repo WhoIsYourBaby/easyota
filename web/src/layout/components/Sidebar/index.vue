@@ -17,6 +17,7 @@
           :key="route.path"
           :item="route"
           :base-path="route.path"
+          :isCollapse="isCollapse"
         />
         <el-divider></el-divider>
         <sidebar-item
@@ -24,6 +25,7 @@
           :key="route.path"
           :item="route"
           :base-path="route.path"
+          :isCollapse="isCollapse"
         />
       </el-menu>
     </el-scrollbar>

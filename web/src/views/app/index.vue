@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
-    <div>{{ $route.params.id }}</div>
-    <info></info>
+    <info :data="appDetail"></info>
   </div>
 </template>
 

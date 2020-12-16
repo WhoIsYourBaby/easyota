@@ -12,14 +12,15 @@
           :index="resolvePath(onlyOneChild.path)"
           :class="{'submenu-title-noDropdown': !isNest}"
         >
-          <item :meta="onlyOneChild.meta || item.meta"/>
+          <item v-if="!isCollapse" :meta="onlyOneChild.meta || item.meta" />
+          <item-collapse v-else :meta="onlyOneChild.meta || item.meta" />
         </el-menu-item>
       </app-link>
     </template>
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+        <item v-if="item.meta" :meta="item.meta" />
       </template>
       <sidebar-item
         v-for="child in item.children"
@@ -28,6 +29,8 @@
         :item="child"
         :base-path="resolvePath(child.path)"
         class="nest-menu"
+        ,
+        :isCollapse="isCollapse"
       />
     </el-submenu>
   </div>
@@ -37,12 +40,13 @@
 import path from 'path';
 import {isExternal} from '@/utils/validate';
 import Item from './Item';
+import ItemCollapse from './ItemCollapse';
 import AppLink from './Link';
 import FixiOSBug from './FixiOSBug';
 
 export default {
   name: 'SidebarItem',
-  components: {Item, AppLink},
+  components: {Item, AppLink, ItemCollapse},
   mixins: [FixiOSBug],
   props: {
     // route object
@@ -57,6 +61,10 @@ export default {
     basePath: {
       type: String,
       default: ''
+    },
+    isCollapse: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
