@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Info from './components/info';
+import Info from './components/Info';
 import apiApp from '@/api/app';
 export default {
   components: {
