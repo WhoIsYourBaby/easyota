@@ -40,10 +40,6 @@ export default {
 
 
 <style lang="scss" scoped>
-.app {
-  &-container {
-    margin: 30px;
-  }
-}
+
 </style>
 
