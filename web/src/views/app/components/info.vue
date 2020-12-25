@@ -39,9 +39,7 @@ export default {
 
 <style lang="scss" scoped>
 .info {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  @include flexStart;
   padding: 20px;
   &-name {
     text-align: center;

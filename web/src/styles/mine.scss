@@ -1,0 +1,101 @@
+
+
+// 颜色
+// 基础色系
+$green: #3ec298;
+$fontText: #575f66; //标题
+$fontBoldText: #1d2023; //正文
+$fontSubText: #8e99a0; //辅助文字
+$headerBkg: #1f2235;
+$disableColor: #c5cfd5;
+$red: #e63d3d;
+
+//普通默认容器样式
+@mixin appContainer {
+  padding: 20px;
+  border-radius: 4px;
+  background: white;
+}
+
+@mixin pageContainer {
+  padding: 20px;
+  min-width: 984px;
+}
+
+
+//  字体大小-最大标题
+@mixin texth1 {
+  font-size: 20px;
+  color: $fontBoldText;
+  font-weight: 500;
+}
+// 一边标题
+@mixin texth3 {
+  font-size: 16px;
+  color: $fontBoldText;
+  font-weight: 500;
+}
+// 正文
+@mixin textp {
+  font-size: 14px;
+  color: $fontText;
+  font-weight: 400;
+}
+// 辅助说明字体大小
+@mixin textminip {
+  font-size: 12px;
+  color: $fontSubText;
+  font-weight: 400;
+}
+
+
+@mixin flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flexBetween {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flexAround {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+@mixin flexStart {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@mixin flexStartC {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+@mixin flexEnd {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+@mixin alignCenter {
+  display: flex;
+  align-items: center;
+}
+
+@mixin alignStretch {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+@mixin borderBox {
+  box-sizing: border-box;
+}
