@@ -1,5 +1,3 @@
-
-
 // 颜色
 // 基础色系
 $green: #3ec298;
@@ -15,11 +13,7 @@ $red: #e63d3d;
   padding: 20px;
   border-radius: 4px;
   background: white;
-}
-
-@mixin pageContainer {
-  padding: 20px;
-  min-width: 984px;
+  min-width: 774px;
 }
 
 
@@ -98,4 +92,12 @@ $red: #e63d3d;
 
 @mixin borderBox {
   box-sizing: border-box;
+}
+
+
+// main-container global css
+.app-container {
+  padding: 20px;
+  border-radius: 4px;
+  min-width: 774px;
 }
