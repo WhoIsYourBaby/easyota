@@ -4,7 +4,6 @@
       <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
       <div class="attrs">
         <subtitle>中电达康</subtitle>
-        <text-body>https://www.baidu.com</text-body>
         <div>
           <el-link type="info" :href="data.short" target="_blank">{{ data.short }}</el-link>
         </div>

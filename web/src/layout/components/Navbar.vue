@@ -1,10 +1,10 @@
 <template>
   <div class="navbar">
-    <hamburger
+    <!-- <hamburger
       :is-active="settings.sidebar.opened"
       class="hamburger-container"
       @toggleClick="toggleSideBar"
-    />
+    /> -->
 
     <breadcrumb class="breadcrumb-container" />
 
