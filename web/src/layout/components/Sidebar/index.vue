@@ -27,6 +27,15 @@
           :base-path="route.path"
           :isCollapse="isCollapse"
         />
+        <div class="myupload">
+          <el-upload
+            :before-upload="beforeUpload"
+            :http-request="myUpload"
+            action="https://jsonplaceholder.typicode.com/posts/"
+          >
+            <el-button size="medium" type="primary" style="width: 170px">点击上传ipa/apk</el-button>
+          </el-upload>
+        </div>
       </el-menu>
     </el-scrollbar>
   </div>
@@ -39,6 +48,7 @@ import SidebarItem from './SidebarItem';
 import variables from '@/styles/variables.scss';
 import apiApp from '@/api/app';
 import Layout from '@/layout';
+import request from '@/utils/request';
 
 export default {
   components: {SidebarItem, Logo},
@@ -98,7 +108,35 @@ export default {
         };
       });
       return routes;
+    },
+    beforeUpload(file) {
+      const isApp = file.name.endsWith('.ipa') || file.name.endsWith('.apk');
+      if (!isApp) {
+        this.$message({
+          message: '请上传ipa或apk！',
+          type: 'error'
+        });
+      }
+      return isApp;
+    },
+    myUpload(file) {
+      let fd = new FormData();
+      fd.append('file', file.file);
+      request({
+        url: '/app/upload',
+        method: 'post',
+        headers: {'Content-Type': 'multipart/form-data'},
+        fd
+      }).then((resp) => {
+        console.log(resp);
+      });
     }
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.myupload {
+  padding: 10px 0px 0px 20px;
+}
+</style>
