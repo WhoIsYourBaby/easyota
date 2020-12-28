@@ -19,6 +19,7 @@ import TextBody from '@/components/Text/TextBody';
 import TextLabel from '@/components/Text/TextLabel';
 import Subtitle from '@/components/Text/Subtitle';
 import MainTitle from '@/components/Text/MainTitle';
+import { _ } from 'core-js';
 
 /**
  * If you don't want to use mock-server
@@ -40,7 +41,10 @@ Vue.use(ElementUI, {locale});
 
 Vue.config.productionTip = false;
 
-Vue.component(TextBody, TextLabel, MainTitle, Subtitle);
+Vue.component('text-body', TextBody);
+Vue.component('text-label', TextLabel);
+Vue.component('main-title', MainTitle);
+Vue.component('subtitle', Subtitle);
 
 new Vue({
   el: '#app',

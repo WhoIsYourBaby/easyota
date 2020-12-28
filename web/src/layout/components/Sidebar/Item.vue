@@ -20,7 +20,7 @@
 
 
 <script>
-import { platformString } from "@/utils/validate";
+import { formatPlatform } from "@/utils/validate";
 export default {
   name: 'MenuItem',
   props: {
@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     platform(str) {
-      return platformString(str);
+      return formatPlatform(str);
     }
   }
 };

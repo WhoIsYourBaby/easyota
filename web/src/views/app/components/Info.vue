@@ -1,26 +1,21 @@
 <template>
   <el-card shadow="hover">
     <div class="info">
-      <el-col style="min-width: 100px; max-width: 100px">
-        <el-image style="width: 100px; height: 100px" :src="data.icon" fit="fill"></el-image>
-        <div class="info-name">{{ data.name }}</div>
-      </el-col>
-      <el-col>
-        <div class="info-attr-container">
-          <div class="info-attr-container-item">{{ platform(data.platform) }}</div>
-          <div class="info-attr-container-item">{{ data.createTime }}</div>
-          <div class="info-attr-container-item">{{ platform(data.platform) }}</div>
-          <div class="info-attr-container-item">{{ platform(data.platform) }}</div>
-          <div class="info-attr-container-item">{{ platform(data.platform) }}</div>
-          <div class="info-attr-container-item">{{ platform(data.platform) }}</div>
-        </div>
-      </el-col>
+      <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
+      <div class="attrs">
+        <subtitle>中电达康</subtitle>
+        <text-body>https://www.baidu.com</text-body>
+        <text-body>{{ data.bundleId }}</text-body>
+        <text-body>{{ platform(data.platform) }}</text-body>
+        <text-body>{{ dateStr(data.createTime) }}</text-body>
+      </div>
+      <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
     </div>
   </el-card>
 </template>
 
 <script>
-import { platformString } from "@/utils/validate";
+import {formatPlatform, formatDate} from '@/utils/validate';
 export default {
   props: {
     data: {
@@ -30,7 +25,10 @@ export default {
   },
   methods: {
     platform(str) {
-      return platformString(str);
+      return formatPlatform(str);
+    },
+    dateStr(str) {
+      return formatDate('yyyy-MM-dd hh:mm', str);
     }
   }
 };
@@ -41,22 +39,15 @@ export default {
 .info {
   @include flexStart;
   padding: 20px;
-  &-name {
-    text-align: center;
-    max-width: 100px;
-  }
-  &-attr-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    padding: 10px;
+  align-items: stretch;
 
-    &-item {
-      min-width: 200px;
-      max-width: 200px;
-      padding: 8px;
-    }
+  .attrs {
+    @include flexAround;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 120px;
+    margin-left: 10px;
+    flex-grow: 1;
   }
 }
 </style>
