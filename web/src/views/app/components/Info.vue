@@ -5,11 +5,17 @@
       <div class="attrs">
         <subtitle>中电达康</subtitle>
         <text-body>https://www.baidu.com</text-body>
+        <div>
+          <el-link type="info" :href="data.short" target="_blank">{{ data.short }}</el-link>
+        </div>
         <text-body>{{ data.bundleId }}</text-body>
         <text-body>{{ platform(data.platform) }}</text-body>
         <text-body>{{ dateStr(data.createTime) }}</text-body>
       </div>
       <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
+    </div>
+    <div class="appdesc">
+      <text-body>{{ data.adesc }}</text-body>
     </div>
   </el-card>
 </template>
@@ -49,5 +55,8 @@ export default {
     margin-left: 10px;
     flex-grow: 1;
   }
+}
+.appdesc {
+  margin: 10px 20px 0px 150px;
 }
 </style>
