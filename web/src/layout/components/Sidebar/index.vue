@@ -31,6 +31,7 @@
           <el-upload
             :before-upload="beforeUpload"
             :http-request="myUpload"
+            :on-progress="onProgress"
             action="https://jsonplaceholder.typicode.com/posts/"
           >
             <el-button size="medium" type="primary" style="width: 170px">点击上传ipa/apk</el-button>
@@ -38,6 +39,7 @@
         </div>
       </el-menu>
     </el-scrollbar>
+    <app-update :visible="this.showUpdate" @on-finish="showUpdate = false;"></app-update>
   </div>
 </template>
 
@@ -49,12 +51,17 @@ import variables from '@/styles/variables.scss';
 import apiApp from '@/api/app';
 import Layout from '@/layout';
 import request from '@/utils/request';
+import AppUpdate from '@/views/app/components/AppUpdate';
 
 export default {
-  components: {SidebarItem, Logo},
+  components: {SidebarItem, Logo, AppUpdate},
   data() {
     return {
-      appList: []
+      appList: [],
+      isUploading: false,
+      uploadText: '点击上传ipa/apk',
+      showUpdate: false,
+      showNewApp: false
     };
   },
   computed: {
@@ -126,10 +133,20 @@ export default {
         url: '/app/upload',
         method: 'post',
         headers: {'Content-Type': 'multipart/form-data'},
-        fd
+        data: fd
       }).then((resp) => {
-        console.log(resp);
+        const data = resp.data;
+        if (data.code == 200) {
+          this.showUpdate = true;
+        }
       });
+    },
+    onProgress(event, file, filelist) {
+      console.log(event);
+    },
+    onAppFinish() {
+      console.log('onAppFinish');
+      this.showUpdate = false;
     }
   }
 };
@@ -138,5 +155,9 @@ export default {
 <style lang="scss" scoped>
 .myupload {
   padding: 10px 0px 0px 20px;
+
+  ::v-deep .el-upload-list__item {
+    visibility: hidden;
+  }
 }
 </style>
