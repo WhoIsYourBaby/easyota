@@ -39,7 +39,7 @@
         </div>
       </el-menu>
     </el-scrollbar>
-    <app-update :visible="this.showUpdate" @on-finish="showUpdate = false;"></app-update>
+    <app-update :data="appInfo" :visible="this.showUpdate" @on-finish="showUpdate = false;"></app-update>
   </div>
 </template>
 
@@ -61,7 +61,8 @@ export default {
       isUploading: false,
       uploadText: '点击上传ipa/apk',
       showUpdate: false,
-      showNewApp: false
+      showNewApp: false,
+      appInfo: {}
     };
   },
   computed: {
@@ -137,6 +138,7 @@ export default {
       }).then((resp) => {
         const data = resp.data;
         if (data.code == 200) {
+          this.appInfo = data.body;
           this.showUpdate = true;
         }
       });
