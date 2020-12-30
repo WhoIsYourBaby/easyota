@@ -87,7 +87,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   }
   if (platform === 'unknown') {
     ctx.body = {
-      code: 500,
+      code: 604,
       msg: '请上传ipa或者apk安装包'
     };
     return;
@@ -100,9 +100,18 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   const appinfo = await parser.parse();
   const iconPath = saveIcon(appinfo.icon);
   const iconUrl = domain + iconPath;
-  ctx.session.appPath = appPath;
-  ctx.session.appUrl = domain + '/upload/' + ctx.file.filename;
-  ctx.session.iconUrl = iconUrl;
+  const appUrl = domain + '/upload/' + ctx.file.filename;
+  //插入上传的app到upload表
+  const insertApp = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'insert into upload (url, path, user_id) values (?, ?, ?)',
+    [appUrl, appPath, ctx.state.user.id]
+  );
+  const insertIcon = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'insert into upload (url, path, user_id) values (?, ?, ?)',
+    [iconUrl, iconPath, ctx.state.user.id]
+  );
   let appBody;
   const bundleId = platform === 'android' ? appinfo.package : appinfo.CFBundleIdentifier;
   const appInDb = await dbhealper.makePromise(
@@ -118,7 +127,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       name: appinfo.application.label,
       bundle_id: appinfo.package,
       version: appinfo.versionName,
-      build: appinfo.versionCode
+      build: appinfo.versionCode,
+      uploadId: insertApp.insertId
     };
   } else {
     appBody = {
@@ -128,7 +138,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       name: appinfo.CFBundleName,
       bundle_id: appinfo.CFBundleIdentifier,
       version: appinfo.CFBundleShortVersionString,
-      build: appinfo.CFBundleVersion
+      build: appinfo.CFBundleVersion,
+      uploadId: insertApp.insertId
     };
   }
   ctx.body = {
@@ -145,12 +156,28 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
  * verDesc
  * short
  * name
+ * iconUrl
+ * uploadId
  */
 router.post('/create', async (ctx, next) => {
-  const testurl = ctx.session.iconUrl.replace(/\//g, '/');
+  // const testurl = ctx.session.iconUrl.replace(/\//g, '/');
   const qbody = ctx.request.body;
+  const uploadId = qbody.uploadId;
+  const uploadInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select * from upload where id=? and user_id=?',
+    [uploadId, ctx.state.user.id]
+  );
+  if (uploadInDb.length == 0) {
+    ctx.body = {
+      code: 602,
+      msg: '您还没有上传ipa/apk文件'
+    };
+    return;
+  }
   let platform = 'unknown';
-  const appPath = ctx.session.appPath;
+  const appPath = uploadInDb[0].path;
+  const appUrl = uploadInDb[0].url;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -167,7 +194,7 @@ router.post('/create', async (ctx, next) => {
   );
   if (appInDb.length > 0 || platform === 'unknown') {
     ctx.body = {
-      code: 500,
+      code: 602,
       msg: '该App已经存在，无法再次创建'
     };
     return;
@@ -177,9 +204,9 @@ router.post('/create', async (ctx, next) => {
     verDesc: qbody.verDesc,
     short: qbody.short,
     name: qbody.name,
-    appPath: ctx.session.appPath,
-    iconUrl: ctx.session.iconUrl,
-    binUrl: ctx.session.appUrl,
+    appPath: appPath,
+    iconUrl: qbody.iconUrl,
+    binUrl: appUrl,
     bundleId: bundleId,
     platform: platform,
     version:
@@ -187,9 +214,6 @@ router.post('/create', async (ctx, next) => {
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
   };
   await createApp(ctx.state.sqlconn, ctx.state.user, appSubmit);
-  ctx.session.iconUrl = undefined;
-  ctx.session.appPath = undefined;
-  ctx.session.appUrl = undefined;
   ctx.body = {
     code: 200,
     msg: 'ok'
@@ -212,19 +236,18 @@ router.post('/update', async (ctx, next) => {
   );
   if (appInDb.length === 0) {
     ctx.body = {
-      code: 500,
+      code: 601,
       msg: '该App不存在或者不属于你'
     };
     return;
   }
-  await dbhealper.makePromise('update app set name=?, adesc=?, short=? where id=? and user_id=?', [
-    qbody.name,
-    qbody.adesc,
-    qbody.short,
-    qbody.appId,
-    ctx.state.user.id
-  ]);
+  await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'update app set name=?, adesc=?, short=? where id=? and user_id=?',
+    [qbody.name, qbody.adesc, qbody.short, qbody.appId, ctx.state.user.id]
+  );
   appInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
     'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId from app where id=? and user_id=?;',
     [qbody.appId, ctx.state.user.id]
   );

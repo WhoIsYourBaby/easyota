@@ -4,13 +4,13 @@ const app = {
   fetchList() {
     return request({
       url: '/app/list',
-      method: 'get',
+      method: 'get'
     });
   },
 
   /**
-   * 
-   * @param {appId} appId 
+   *
+   * @param {appId} appId
    */
   fetchApp(appId) {
     const params = {appId: appId};
@@ -26,6 +26,22 @@ const app = {
       url: '/app/version/list',
       method: 'get',
       params
+    });
+  },
+  create(name, short, appDesc, verDesc) {
+    const data = {name: name, short: short, appDesc: appDesc, verDesc: verDesc};
+    return request({
+      url: '/app/create',
+      method: 'post',
+      data
+    });
+  },
+  update(appId, name, short, verDesc) {
+    const data = {name: name, short: short, appId: appId, verDesc: verDesc};
+    return request({
+      url: '/app/update',
+      method: 'post',
+      data
     });
   }
 };

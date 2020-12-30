@@ -44,6 +44,7 @@
 </template>
 
 <script>
+import apiApp from '@/api/app';
 export default {
   props: {
     data: {type: Object, default: null},
@@ -59,12 +60,33 @@ export default {
       this.$emit('on-finish');
     },
     onSure() {
-      // todo: 提交数据
-      // 关闭窗口
-      this.$emit('on-finish');
+      if (this.vinfo.isNew) {
+        apiApp
+          .create(this.vinfo.name, this.vinfo.short, this.vinfo.adesc, this.vinfo.vdesc)
+          .then(this.onResponse);
+      } else {
+        apiApp
+          .update(this.vinfo.appId, this.vinfo.name, this.vinfo.short, this.vinfo.vdesc)
+          .then(this.onResponse);
+      }
     },
     onOpen() {
       this.vinfo = this.data;
+    },
+    onResponse(resp) {
+      if (resp.data.code == 200) {
+        this.$message({
+          message: '创建App版本成功',
+          type: 'success'
+        });
+        // 关闭窗口
+        this.$emit('on-finish');
+      } else {
+        this.$message({
+          message: '创建App版本失败',
+          type: 'error'
+        });
+      }
     }
   }
 };

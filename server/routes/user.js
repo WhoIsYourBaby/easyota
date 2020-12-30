@@ -33,7 +33,7 @@ router.post('/login', async (ctx, next) => {
       }
     };
   } else {
-    ctx.body = {code: 403, msg: '登录失败，错误的用户名或密码', body: null};
+    ctx.body = {code: 605, msg: '登录失败，错误的用户名或密码', body: null};
   }
 });
 
@@ -63,7 +63,7 @@ router.post('/register', async (ctx, next) => {
   const query = 'select * from user where email=?;';
   const users = await dbhealper.makePromise(ctx.state.sqlconn, query, [email]);
   if (users.length > 0) {
-    ctx.body = {code: 500, msg: '该邮箱地址已被他人注册', body: null};
+    ctx.body = {code: 602, msg: '该邮箱地址已被他人注册', body: null};
   } else {
     const type = 'user';
     const insert = 'insert into user (email, password, nickname, type, avatar) values (?, ?, ?, ?, ?)';
@@ -106,7 +106,7 @@ router.get('/list', async (ctx, next) => {
       body: users
     };
   } else {
-    ctx.body = {code: 403, msg: '您没有相应权限', body: null};
+    ctx.body = {code: 601, msg: '您没有相应权限', body: null};
   }
 });
 
