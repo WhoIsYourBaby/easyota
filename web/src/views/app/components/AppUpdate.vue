@@ -61,19 +61,27 @@ export default {
     },
     onSure() {
       if (this.vinfo.isNew) {
-        apiApp
-          .create(
-            this.vinfo.name,
-            this.vinfo.short,
-            this.vinfo.adesc,
-            this.vinfo.vdesc,
-            this.vinfo.uploadId,
-            this.vinfo.icon
-          )
-          .then(this.onResponse);
+        const data = {
+          name: this.vinfo.name,
+          short: this.vinfo.short,
+          appDesc: this.vinfo.adesc,
+          verDesc: this.vinfo.vdesc,
+          uploadId: this.vinfo.uploadId,
+          icon: this.vinfo.icon
+        };
+        apiApp.create(data).then(this.onResponse);
       } else {
+        const data = {
+          appId: this.vinfo.appId,
+          uploadId: this.vinfo.uploadId,
+          name: this.vinfo.name,
+          short: this.vinfo.short,
+          verDesc: this.vinfo.vdesc,
+          icon: this.vinfo.icon,
+          branch: this.vinfo.branch,
+        };
         apiApp
-          .update(this.vinfo.appId, this.vinfo.name, this.vinfo.short, this.vinfo.vdesc)
+          .versionCreate(data)
           .then(this.onResponse);
       }
     },
@@ -87,7 +95,7 @@ export default {
           type: 'success'
         });
         // 关闭窗口
-        this.$emit('on-finish');
+        this.$emit('on-finish', this.vinfo.isNew);
       } else {
         this.$message({
           message: '创建App版本失败',

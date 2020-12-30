@@ -146,8 +146,12 @@ export default {
     onProgress(event, file, filelist) {
       console.log(event);
     },
-    onAppFinish() {
-      console.log('onAppFinish');
+    onAppFinish(isNew) {
+      if (isNew) {
+        this.fetchAppList();
+      } else {
+        //刷新相应app版本列表
+      }
       this.showUpdate = false;
     }
   }

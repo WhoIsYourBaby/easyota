@@ -156,7 +156,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
  * verDesc
  * short
  * name
- * iconUrl
+ * icon
  * uploadId
  */
 router.post('/create', async (ctx, next) => {
@@ -282,13 +282,32 @@ router.post('/delete', async (ctx, next) => {
  * 新增版本
  * 如果是新上传的app：app/upload->app/create
  * 如果上传的app已经存在：app/upload->app/version/create
+ * name
  * vdesc
  * branch
+ * short
  * appId
+ * icon
+ * uploadId
  */
 router.post('/version/create', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  const uploadId = qbody.uploadId;
+  const uploadInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select * from upload where id=? and user_id=?',
+    [uploadId, ctx.state.user.id]
+  );
+  if (uploadInDb.length == 0) {
+    ctx.body = {
+      code: 602,
+      msg: '您还没有上传ipa/apk文件'
+    };
+    return;
+  }
   let platform = 'unknown';
-  const appPath = ctx.session.appPath;
+  const appPath = uploadInDb[0].path;
+  const appUrl = uploadInDb[0].url;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -301,8 +320,7 @@ router.post('/version/create', async (ctx, next) => {
     platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString;
   const build = platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion;
   const verUuid = UUID.v1().replace(/-/g, '');
-  const binUrl = ctx.session.appUrl;
-  const iconUrl = ctx.session.iconUrl;
+  const iconUrl = qbody.icon;
   const insertResult = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -313,16 +331,12 @@ router.post('/version/create', async (ctx, next) => {
       build,
       qbody.vdesc,
       qbody.branch,
-      binUrl,
+      appUrl,
       null,
       iconUrl,
       ctx.state.user.id
     ]
   );
-
-  ctx.session.iconUrl = undefined;
-  ctx.session.appPath = undefined;
-  ctx.session.appUrl = undefined;
   ctx.body = {
     code: 200,
     msg: `${insertResult.affectedRows}条数据被创建`,
@@ -334,7 +348,7 @@ router.post('/version/create', async (ctx, next) => {
       build: build,
       vdesc: qbody.vdesc,
       branch: qbody.branch,
-      binUrl: binUrl,
+      binUrl: appUrl,
       icon: iconUrl,
       mainfest: null
     }

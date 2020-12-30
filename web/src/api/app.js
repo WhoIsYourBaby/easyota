@@ -28,25 +28,23 @@ const app = {
       params
     });
   },
-  create(name, short, appDesc, verDesc, uploadId, icon) {
-    const data = {
-      name: name,
-      short: short,
-      appDesc: appDesc,
-      verDesc: verDesc,
-      uploadId: uploadId,
-      icon: icon
-    };
+  create(data) {
     return request({
       url: '/app/create',
       method: 'post',
       data
     });
   },
-  update(appId, name, short, verDesc) {
-    const data = {name: name, short: short, appId: appId, verDesc: verDesc};
+  update(data) {
     return request({
       url: '/app/update',
+      method: 'post',
+      data
+    });
+  },
+  versionCreate(data) {
+    return request({
+      url: '/app/version/create',
       method: 'post',
       data
     });
