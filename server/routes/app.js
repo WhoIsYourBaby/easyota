@@ -205,7 +205,7 @@ router.post('/create', async (ctx, next) => {
     short: qbody.short,
     name: qbody.name,
     appPath: appPath,
-    iconUrl: qbody.iconUrl,
+    iconUrl: qbody.icon,
     binUrl: appUrl,
     bundleId: bundleId,
     platform: platform,

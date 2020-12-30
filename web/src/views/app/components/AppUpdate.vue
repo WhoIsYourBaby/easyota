@@ -62,7 +62,14 @@ export default {
     onSure() {
       if (this.vinfo.isNew) {
         apiApp
-          .create(this.vinfo.name, this.vinfo.short, this.vinfo.adesc, this.vinfo.vdesc)
+          .create(
+            this.vinfo.name,
+            this.vinfo.short,
+            this.vinfo.adesc,
+            this.vinfo.vdesc,
+            this.vinfo.uploadId,
+            this.vinfo.icon
+          )
           .then(this.onResponse);
       } else {
         apiApp

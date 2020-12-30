@@ -28,8 +28,15 @@ const app = {
       params
     });
   },
-  create(name, short, appDesc, verDesc) {
-    const data = {name: name, short: short, appDesc: appDesc, verDesc: verDesc};
+  create(name, short, appDesc, verDesc, uploadId, icon) {
+    const data = {
+      name: name,
+      short: short,
+      appDesc: appDesc,
+      verDesc: verDesc,
+      uploadId: uploadId,
+      icon: icon
+    };
     return request({
       url: '/app/create',
       method: 'post',
