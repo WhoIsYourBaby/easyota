@@ -8,6 +8,7 @@
     :close-on-click-modal="false"
     :before-close="onCancel"
     destroy-on-close
+    @open="onOpen"
   >
     <div class="app-update-info">
       <el-image style="width: 100px; height: 100px" :src="data.icon" fit="fill"></el-image>
@@ -26,7 +27,13 @@
           v-model="vinfo.vdesc"
           style="margin: 0px 0px 30px 0px"
         ></el-input>
-        <el-input type="textarea" :rows="6" placeholder="应用介绍" v-model="vinfo.adesc" v-if="vinfo.isNew"></el-input>
+        <el-input
+          type="textarea"
+          :rows="6"
+          placeholder="应用介绍"
+          v-model="vinfo.adesc"
+          v-if="vinfo.isNew"
+        ></el-input>
       </div>
     </div>
     <span slot="footer" class="app-update-footer">
@@ -50,13 +57,14 @@ export default {
   methods: {
     onCancel() {
       this.$emit('on-finish');
-      this.vinfo = {};
     },
     onSure() {
       // todo: 提交数据
       // 关闭窗口
       this.$emit('on-finish');
-      this.vinfo = {};
+    },
+    onOpen() {
+      this.vinfo = this.data;
     }
   }
 };
