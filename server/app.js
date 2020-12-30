@@ -12,12 +12,15 @@ const session = require("koa-session2");
 const index = require('./routes/index');
 const user = require('./routes/user');
 const appRoute = require('./routes/app');
+const myconfig = require('./utils/myconfig');
 
 const dbconn = require('./middle/dbconn');
 
 // logger
 app.use(async (ctx, next) => {
   const start = new Date();
+  ctx.state.config = myconfig;
+  console.log(ctx.state.config);
   await next();
   const ms = new Date() - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
