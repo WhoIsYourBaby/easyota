@@ -20,6 +20,11 @@
         <el-input placeholder="短连接" v-model="vinfo.short" style="margin: 0px 0px 30px 0px">
           <template slot="prepend">Http://fir.im</template>
         </el-input>
+        <el-radio-group v-model="vinfo.branch" border style="margin-bottom: 30px; display: inline-block">
+          <el-radio-button label="alpha"></el-radio-button>
+          <el-radio-button label="beta"></el-radio-button>
+          <el-radio-button label="rc"></el-radio-button>
+        </el-radio-group>
         <el-input
           type="textarea"
           :rows="4"
@@ -78,11 +83,9 @@ export default {
           short: this.vinfo.short,
           verDesc: this.vinfo.vdesc,
           icon: this.vinfo.icon,
-          branch: this.vinfo.branch,
+          branch: this.vinfo.branch
         };
-        apiApp
-          .versionCreate(data)
-          .then(this.onResponse);
+        apiApp.versionCreate(data).then(this.onResponse);
       }
     },
     onOpen() {

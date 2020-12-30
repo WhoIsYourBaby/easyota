@@ -125,10 +125,11 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       appId: appInDb.length === 0 ? null : appInDb[0].id,
       icon: iconUrl,
       name: appinfo.application.label,
-      bundle_id: appinfo.package,
+      bundleId: appinfo.package,
       version: appinfo.versionName,
       build: appinfo.versionCode,
-      uploadId: insertApp.insertId
+      uploadId: insertApp.insertId,
+      branch: 'alpha'
     };
   } else {
     appBody = {
@@ -136,10 +137,11 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       appId: appInDb.length === 0 ? null : appInDb[0].id,
       icon: iconUrl,
       name: appinfo.CFBundleName,
-      bundle_id: appinfo.CFBundleIdentifier,
+      bundleId: appinfo.CFBundleIdentifier,
       version: appinfo.CFBundleShortVersionString,
       build: appinfo.CFBundleVersion,
-      uploadId: insertApp.insertId
+      uploadId: insertApp.insertId,
+      branch: 'alpha'
     };
   }
   ctx.body = {
