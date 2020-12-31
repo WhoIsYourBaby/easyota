@@ -39,7 +39,7 @@
         </div>
       </el-menu>
     </el-scrollbar>
-    <app-update :data="appInfo" :visible="this.showUpdate" @on-finish="showUpdate = false;"></app-update>
+    <app-update :data="appInfo" :visible="this.showUpdate" @on-finish="onAppFinish"></app-update>
   </div>
 </template>
 

@@ -1,37 +1,34 @@
 <template>
   <div class="app-container">
     <info :data="appDetail"></info>
+    <div class="versions">
+      <versions :appId="appDetail.id"></versions>
+    </div>
   </div>
 </template>
 
 <script>
 import Info from './components/Info';
+import Versions from './components/Versions';
 import apiApp from '@/api/app';
 export default {
   components: {
-    Info
+    Info,
+    Versions
   },
   data() {
     return {
-      appDetail: {},
-      versionList: []
+      appDetail: {}
     };
   },
   created() {
     this.fetchAppDetail();
-    this.fetchVersionList();
   },
   methods: {
     fetchAppDetail() {
       const appId = this.$route.params.id;
       apiApp.fetchApp(appId).then((resp) => {
         this.appDetail = resp.data.body;
-      });
-    },
-    fetchVersionList() {
-      const appId = this.$route.params.id;
-      apiApp.fetchVersionList(appId).then((resp) => {
-        this.versionList = resp.data.body;
       });
     }
   }
@@ -40,6 +37,8 @@ export default {
 
 
 <style lang="scss" scoped>
-
+.versions {
+  margin: 20px 0px 20px -20px;
+}
 </style>
 

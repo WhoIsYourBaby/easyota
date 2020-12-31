@@ -20,8 +20,8 @@ const app = {
       params
     });
   },
-  fetchVersionList(appId) {
-    const params = {appId: appId};
+  fetchVersionList(appId, page, size) {
+    const params = {appId: appId, page: page, size: size};
     return request({
       url: '/app/version/list',
       method: 'get',

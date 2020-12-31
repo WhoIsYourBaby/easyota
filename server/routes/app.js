@@ -7,7 +7,6 @@ const UUID = require('node-uuid');
 const fs = require('fs');
 const mysql = require('mysql');
 const AppInfoParser = require('app-info-parser');
-const {version} = require('punycode');
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -400,19 +399,25 @@ router.post('/version/delete', async (ctx, next) => {
 /**
  * 获取指定app的version列表
  * appId
+ * page
+ * size
  */
 router.get('/version/list', async (ctx, next) => {
   const qbody = ctx.request.query;
   const appId = qbody.appId;
+  const page = parseInt(qbody.page || 1);
+  const size = parseInt(qbody.size || 10);
+  const start = (page - 1) * size;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, uuid, create_time as createTime, app_id, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=?',
-    [appId, ctx.state.user.id]
+    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=? order by id desc limit ?,?;',
+    [appId, ctx.state.user.id, start, size]
   );
   ctx.body = {
     code: 200,
     msg: 'ok',
-    body: versionsInDb
+    body: versionsInDb,
+    isPageEnd: versionsInDb.length < size
   };
 });
 
