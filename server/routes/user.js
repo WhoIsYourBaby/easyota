@@ -56,9 +56,7 @@ router.post('/register', async (ctx, next) => {
   const email = qbody.email;
   const password = qbody.password;
   const nickname = qbody.nickname;
-  const host = ctx.req.headers.host;
-  const protocol = !!ctx.req.connection.encrypted ? 'https://' : 'http://';
-  const domain = protocol + host;
+  const domain = ctx.request.origin;
   const avatar = qbody.avatar || (domain + '/user/avatar.png');
   const query = 'select * from user where email=?;';
   const users = await dbhealper.makePromise(ctx.state.sqlconn, query, [email]);

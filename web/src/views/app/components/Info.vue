@@ -5,13 +5,21 @@
       <div class="attrs">
         <subtitle>中电达康</subtitle>
         <div>
-          <el-link type="info" :href="data.short" target="_blank">{{ data.short }}</el-link>
+          <el-link type="info" :href="data.short" target="_blank">
+            {{ rootUrl }}/{{ data.short }}
+          </el-link>
         </div>
         <text-body>{{ data.bundleId }}</text-body>
         <text-body>{{ platform(data.platform) }}</text-body>
         <text-body>{{ dateStr(data.createTime) }}</text-body>
       </div>
-      <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
+      <vue-qr
+        class="bicode"
+        :text="rootUrl + '/' + data.short"
+        :size="150"
+        :logoSrc="data.icon"
+        :margin="8"
+      ></vue-qr>
     </div>
     <div class="appdesc">
       <text-body>{{ data.adesc }}</text-body>
@@ -20,13 +28,23 @@
 </template>
 
 <script>
+import VueQr from 'vue-qr';
 import {formatPlatform, formatDate} from '@/utils/validate';
 export default {
+  components: {VueQr},
   props: {
     data: {
       type: Object,
       default: {}
     }
+  },
+  data() {
+    return {
+      rootUrl: ''
+    };
+  },
+  mounted() {
+    this.rootUrl = process.env.VUE_APP_BASE_URL;
   },
   methods: {
     platform(str) {

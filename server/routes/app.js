@@ -92,9 +92,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     };
     return;
   }
-  const host = ctx.req.headers.host;
-  const protocol = !!ctx.req.connection.encrypted ? 'https://' : 'http://';
-  const domain = protocol + host;
+  const domain = ctx.request.origin;
   const appPath = ctx.file.path;
   const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
