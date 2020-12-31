@@ -8,12 +8,27 @@
         :key="index"
       >
         <el-card>
-          <h4>更新 Github 模板</h4>
-          <p>王小虎 提交于 2018/4/12 20:46</p>
+          <main-title>{{ item.version }} ( build {{ item.build }} )</main-title>
+          <p>
+            <text-body>{{ item.vdesc }}</text-body>
+          </p>
+          <el-button-group>
+            <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
+            <el-button type="primary" icon="el-icon-download" size="small"></el-button>
+            <el-button type="primary" icon="el-icon-link" size="small"></el-button>
+            <el-button type="primary" icon="el-icon-delete" size="small"></el-button>
+          </el-button-group>
+          <div style="margin-top: 16px">
+            <el-radio-group v-model="branch" size="small">
+              <el-radio-button label="alpha"></el-radio-button>
+              <el-radio-button label="beta"></el-radio-button>
+              <el-radio-button label="rc"></el-radio-button>
+            </el-radio-group>
+          </div>
         </el-card>
       </el-timeline-item>
     </el-timeline>
-    <el-button v-if="!isPageEnd" type="info" round style="margin-left: 70px">
+    <el-button v-if="!isPageEnd" type="info" round style="margin-left: 70px" @click="loadMore">
       加载更多版本
     </el-button>
   </div>
@@ -33,7 +48,8 @@ export default {
       versionList: [],
       page: 1,
       size: 10,
-      isPageEnd: false
+      isPageEnd: true,
+      branch: 'alpha'
     };
   },
   watch: {
@@ -43,7 +59,15 @@ export default {
       }
     }
   },
+  mounted() {
+    if (this.versionList.length === 0) {
+      this.fetchVersionList(1);
+    }
+  },
   methods: {
+    loadMore() {
+      this.fetchVersionList(this.page + 1);
+    },
     fetchVersionList(page) {
       apiApp.fetchVersionList(this.appId, page, this.size).then((resp) => {
         const data = resp.data;
@@ -59,6 +83,7 @@ export default {
       });
     },
     formatDate(value) {
+      /*
       const date = value ? new Date(value) : new Date();
       const now = new Date();
       let dist = now - date;
@@ -74,7 +99,8 @@ export default {
       if (dist < 3) {
         return `${Math.floor(dist)}天前`;
       }
-      return formatDate('yyyy-MM-dd hh:mm', date);
+      */
+      return formatDate('yyyy-MM-dd hh:mm', value);
     }
   }
 };
