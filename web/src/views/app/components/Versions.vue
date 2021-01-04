@@ -20,10 +20,30 @@
             </el-radio-group>
           </div>
           <el-button-group>
-            <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
-            <el-button type="primary" icon="el-icon-download" size="small"></el-button>
-            <el-button type="primary" icon="el-icon-link" size="small"></el-button>
-            <el-button type="primary" icon="el-icon-delete" size="small"></el-button>
+            <el-button
+              @click="onEditClick(item)"
+              type="primary"
+              icon="el-icon-edit"
+              size="small"
+            ></el-button>
+            <el-button
+              @click="onDownloadClick(item)"
+              type="primary"
+              icon="el-icon-download"
+              size="small"
+            ></el-button>
+            <el-button
+              @click="onLinkClick(item)"
+              type="primary"
+              icon="el-icon-link"
+              size="small"
+            ></el-button>
+            <el-button
+              @click="onDeleteClick(item)"
+              type="primary"
+              icon="el-icon-delete"
+              size="small"
+            ></el-button>
           </el-button-group>
         </el-card>
       </el-timeline-item>
@@ -65,6 +85,12 @@ export default {
     }
   },
   methods: {
+    onLinkClick(item) {},
+    onDeleteClick(item) {},
+    onEditClick(item) {},
+    onDownloadClick(item) {
+      window.open(item.binUrl);
+    },
     onVersionChanged(item) {
       const params = {
         verId: item.id,

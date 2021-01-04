@@ -44,7 +44,9 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data;
-
+    if (res.type == 'application/octet-stream') {
+      return response;
+    }
     // if the custom code is not 200, it is judged as an error.
     if (res.code !== 200) {
       Message({

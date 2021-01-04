@@ -56,6 +56,13 @@ const app = {
       method: 'post',
       data
     });
+  },
+  download(url) {
+    return request({
+      url: url,
+      method: 'get',
+      responseType: 'blob'
+    });
   }
 };
 
