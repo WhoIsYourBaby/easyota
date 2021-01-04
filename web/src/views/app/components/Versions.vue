@@ -38,12 +38,14 @@
               icon="el-icon-link"
               size="small"
             ></el-button>
-            <el-button
-              @click="onDeleteClick(item)"
-              type="primary"
-              icon="el-icon-delete"
-              size="small"
-            ></el-button>
+            <el-popconfirm title="确定删除这个版本吗？" @onConfirm="onDeleteClick(item)">
+              <el-button
+                slot="reference"
+                type="primary"
+                icon="el-icon-delete"
+                size="small"
+              ></el-button>
+            </el-popconfirm>
           </el-button-group>
         </el-card>
       </el-timeline-item>
@@ -85,6 +87,9 @@ export default {
     }
   },
   methods: {
+    confirmText() {
+      console.log("asdasd");
+    },
     onLinkClick(item) {},
     onDeleteClick(item) {
       apiApp.versionDelete(item.id).then((resp) => {
