@@ -83,7 +83,7 @@ export default {
           name: this.vinfo.name,
           short: this.vinfo.short,
           appDesc: this.vinfo.adesc,
-          verDesc: this.vinfo.vdesc,
+          vdesc: this.vinfo.vdesc,
           uploadId: this.vinfo.uploadId,
           icon: this.vinfo.icon
         };
@@ -94,7 +94,7 @@ export default {
           uploadId: this.vinfo.uploadId,
           name: this.vinfo.name,
           short: this.vinfo.short,
-          verDesc: this.vinfo.vdesc,
+          vdesc: this.vinfo.vdesc,
           icon: this.vinfo.icon,
           branch: this.vinfo.branch
         };

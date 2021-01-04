@@ -113,7 +113,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   const bundleId = platform === 'android' ? appinfo.package : appinfo.CFBundleIdentifier;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id from app where bundle_id=? and platform=?',
+    'select id, short from app where bundle_id=? and platform=?',
     [bundleId, platform]
   );
   if (platform === 'android') {
@@ -126,7 +126,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       version: appinfo.versionName,
       build: appinfo.versionCode,
       uploadId: insertApp.insertId,
-      branch: 'alpha'
+      branch: 'alpha',
+      short: appInDb.length === 0 ? null : appInDb[0].short,
     };
   } else {
     appBody = {
@@ -138,7 +139,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       version: appinfo.CFBundleShortVersionString,
       build: appinfo.CFBundleVersion,
       uploadId: insertApp.insertId,
-      branch: 'alpha'
+      branch: 'alpha',
+      short: appInDb.length === 0 ? null : appInDb[0].short,
     };
   }
   ctx.body = {
@@ -152,7 +154,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
  * 创建app、新增版本是不同页面不同接口
  * 根据upload接口返回的信息再次补完app版本数据
  * appDesc
- * verDesc
+ * vdesc
  * short
  * name
  * icon
@@ -200,7 +202,7 @@ router.post('/create', async (ctx, next) => {
   }
   let appSubmit = {
     appDesc: qbody.appDesc,
-    verDesc: qbody.verDesc,
+    vdesc: qbody.vdesc,
     short: qbody.short,
     name: qbody.name,
     appPath: appPath,
@@ -471,7 +473,7 @@ async function createApp(conn, user, appInfo) {
       appId,
       appInfo.version,
       appInfo.build,
-      appInfo.verDesc,
+      appInfo.vdesc,
       'alpha',
       appInfo.binUrl,
       appInfo.mainfest,
