@@ -375,7 +375,7 @@ router.post('/version/update', async (ctx, next) => {
   ctx.body = {
     code: 200,
     msg: `${updateResult.affectedRows}条数据更新`,
-    body: (verInDb, length > 0 ? verInDb[0] : null)
+    body: (verInDb.length > 0 ? verInDb[0] : null)
   };
 });
 

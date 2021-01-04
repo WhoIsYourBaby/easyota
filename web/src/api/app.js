@@ -48,6 +48,14 @@ const app = {
       method: 'post',
       data
     });
+  },
+  //vdesc/branch/verId
+  versionUpdate(data) {
+    return request({
+      url: '/app/version/update',
+      method: 'post',
+      data
+    });
   }
 };
 

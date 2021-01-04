@@ -12,19 +12,19 @@
           <p>
             <text-body>{{ item.vdesc }}</text-body>
           </p>
+          <div style="margin-bottom: 16px">
+            <el-radio-group v-model="item.branch" size="small" @change="onVersionChanged(item)">
+              <el-radio-button label="alpha"></el-radio-button>
+              <el-radio-button label="beta"></el-radio-button>
+              <el-radio-button label="rc"></el-radio-button>
+            </el-radio-group>
+          </div>
           <el-button-group>
             <el-button type="primary" icon="el-icon-edit" size="small"></el-button>
             <el-button type="primary" icon="el-icon-download" size="small"></el-button>
             <el-button type="primary" icon="el-icon-link" size="small"></el-button>
             <el-button type="primary" icon="el-icon-delete" size="small"></el-button>
           </el-button-group>
-          <div style="margin-top: 16px">
-            <el-radio-group v-model="branch" size="small">
-              <el-radio-button label="alpha"></el-radio-button>
-              <el-radio-button label="beta"></el-radio-button>
-              <el-radio-button label="rc"></el-radio-button>
-            </el-radio-group>
-          </div>
         </el-card>
       </el-timeline-item>
     </el-timeline>
@@ -65,6 +65,21 @@ export default {
     }
   },
   methods: {
+    onVersionChanged(item) {
+      const params = {
+        verId: item.id,
+        vdesc: item.vdesc,
+        branch: item.branch
+      };
+      apiApp.versionUpdate(params).then((resp) => {
+        if (resp.data.code == 200) {
+          this.$message({
+            message: '更新成功',
+            type: 'success'
+          });
+        }
+      });
+    },
     loadMore() {
       this.fetchVersionList(this.page + 1);
     },
