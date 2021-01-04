@@ -121,6 +121,9 @@ export default {
       this.fetchVersionList(this.page + 1);
     },
     fetchVersionList(page) {
+      if (this.appId == undefined) {
+        return;
+      }
       apiApp.fetchVersionList(this.appId, page, this.size).then((resp) => {
         const data = resp.data;
         if (data.code == 200) {
