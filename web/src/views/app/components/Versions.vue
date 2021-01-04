@@ -85,6 +85,10 @@ export default {
     if (this.versionList.length === 0) {
       this.fetchVersionList(1);
     }
+    //app-upgrade
+    this.$EventBus.$on("app-upgrade", () => {
+      this.fetchVersionList(1);
+    });
   },
   methods: {
     confirmText() {

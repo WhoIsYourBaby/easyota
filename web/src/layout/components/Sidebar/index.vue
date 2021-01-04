@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     fetchAppList() {
-      apiApp.fetchList().then((resp) => {
+      return apiApp.fetchList().then((resp) => {
         this.appList = resp.data.body;
       });
     },
@@ -150,7 +150,7 @@ export default {
       if (isNew) {
         this.fetchAppList();
       } else {
-        //刷新相应app版本列表
+        this.$EventBus.$emit("app-upgrade");
       }
       this.showUpdate = false;
     }
