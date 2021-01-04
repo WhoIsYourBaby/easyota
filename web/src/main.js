@@ -41,6 +41,8 @@ Vue.use(ElementUI, {locale});
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$EventBus = new Vue();
+
 Vue.component('text-body', TextBody);
 Vue.component('text-label', TextLabel);
 Vue.component('main-title', MainTitle);
