@@ -20,14 +20,7 @@ const app = {
       params
     });
   },
-  fetchVersionList(appId, page, size) {
-    const params = {appId: appId, page: page, size: size};
-    return request({
-      url: '/app/version/list',
-      method: 'get',
-      params
-    });
-  },
+
   create(data) {
     return request({
       url: '/app/create',
@@ -40,6 +33,14 @@ const app = {
       url: '/app/update',
       method: 'post',
       data
+    });
+  },
+  fetchVersionList(appId, page, size) {
+    const params = {appId: appId, page: page, size: size};
+    return request({
+      url: '/app/version/list',
+      method: 'get',
+      params
     });
   },
   versionCreate(data) {
@@ -57,11 +58,13 @@ const app = {
       data
     });
   },
-  download(url) {
+  //verId
+  versionDelete(verId) {
+    const data = {verId: verId};
     return request({
-      url: url,
-      method: 'get',
-      responseType: 'blob'
+      url: '/app/version/delete',
+      method: 'post',
+      data
     });
   }
 };

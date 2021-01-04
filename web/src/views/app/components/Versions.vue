@@ -86,7 +86,13 @@ export default {
   },
   methods: {
     onLinkClick(item) {},
-    onDeleteClick(item) {},
+    onDeleteClick(item) {
+      apiApp.versionDelete(item.id).then((resp) => {
+        if (resp.data.code == 200) {
+          this.fetchVersionList(1);
+        }
+      });
+    },
     onEditClick(item) {},
     onDownloadClick(item) {
       window.open(item.binUrl);
