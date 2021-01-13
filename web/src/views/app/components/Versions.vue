@@ -5,7 +5,11 @@
         v-for="(item, index) in versionList"
         placement="top"
         :key="index"
-        :timestamp="item.isDefault ? (formatDate(item.createTime) + '  (默认下载版本)') : formatDate(item.createTime)"
+        :timestamp="
+          item.isDefault
+            ? formatDate(item.createTime) + '  (默认下载版本)'
+            : formatDate(item.createTime)
+        "
       >
         <div @mouseenter="hoverIndex = index" @mouseleave="hoverIndex = null">
           <el-card>
@@ -105,7 +109,11 @@ export default {
   },
   methods: {
     onTopClick(item) {
-      //todo 置顶该版本作为默认下载版本
+      apiApp.versionDefault({appId: item.appId, verId: item.id}).then((resp) => {
+        if (resp.data && resp.data.code == 200) {
+          this.fetchVersionList(1);
+        }
+      });
     },
     confirmText() {
       console.log('asdasd');

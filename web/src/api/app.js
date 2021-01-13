@@ -66,6 +66,14 @@ const app = {
       method: 'post',
       data
     });
+  },
+  //verId
+  versionDefault(data) {
+    return request({
+      url: '/app/version/default',
+      method: 'post',
+      data
+    });
   }
 };
 

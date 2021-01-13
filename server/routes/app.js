@@ -127,7 +127,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       build: appinfo.versionCode,
       uploadId: insertApp.insertId,
       branch: 'alpha',
-      short: appInDb.length === 0 ? null : appInDb[0].short,
+      short: appInDb.length === 0 ? null : appInDb[0].short
     };
   } else {
     appBody = {
@@ -140,7 +140,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       build: appinfo.CFBundleVersion,
       uploadId: insertApp.insertId,
       branch: 'alpha',
-      short: appInDb.length === 0 ? null : appInDb[0].short,
+      short: appInDb.length === 0 ? null : appInDb[0].short
     };
   }
   ctx.body = {
@@ -377,7 +377,7 @@ router.post('/version/update', async (ctx, next) => {
   ctx.body = {
     code: 200,
     msg: `${updateResult.affectedRows}条数据更新`,
-    body: (verInDb.length > 0 ? verInDb[0] : null)
+    body: verInDb.length > 0 ? verInDb[0] : null
   };
 });
 
@@ -399,6 +399,29 @@ router.post('/version/delete', async (ctx, next) => {
 });
 
 /**
+ * 设置默认版本
+ * verId
+ * appId
+ */
+router.post('/version/default', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'update app_version set is_default=0 where app_id=? and user_id=?',
+    [qbody.appId, ctx.state.user.id]
+  );
+  const updateResult = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'update app_version set is_default=1 where id=? and user_id=?',
+    [qbody.verId, ctx.state.user.id]
+  );
+  ctx.body = {
+    code: 200,
+    msg: `${updateResult.affectedRows}条数据更新`
+  };
+});
+
+/**
  * 获取指定app的version列表
  * appId
  * page
@@ -412,7 +435,7 @@ router.get('/version/list', async (ctx, next) => {
   const start = (page - 1) * size;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where app_id=? and user_id=? order by id desc limit ?,?;',
+    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and user_id=? order by id desc limit ?,?;',
     [appId, ctx.state.user.id, start, size]
   );
   ctx.body = {
