@@ -3,51 +3,63 @@
     <el-timeline>
       <el-timeline-item
         v-for="(item, index) in versionList"
-        :timestamp="formatDate(item.createTime)"
         placement="top"
         :key="index"
+        :timestamp="item.isDefault ? (formatDate(item.createTime) + '  (默认下载版本)') : formatDate(item.createTime)"
       >
-        <el-card>
-          <main-title>{{ item.version }} ( build {{ item.build }} )</main-title>
-          <p>
-            <text-body>{{ item.vdesc }}</text-body>
-          </p>
-          <div style="margin-bottom: 16px">
-            <el-radio-group v-model="item.branch" size="small" @change="onVersionChanged(item)">
-              <el-radio-button label="alpha"></el-radio-button>
-              <el-radio-button label="beta"></el-radio-button>
-              <el-radio-button label="rc"></el-radio-button>
-            </el-radio-group>
-          </div>
-          <el-button-group>
-            <el-button
-              @click="onEditClick(item)"
-              type="primary"
-              icon="el-icon-edit"
-              size="small"
-            ></el-button>
-            <el-button
-              @click="onDownloadClick(item)"
-              type="primary"
-              icon="el-icon-download"
-              size="small"
-            ></el-button>
-            <el-button
-              @click="onLinkClick(item)"
-              type="primary"
-              icon="el-icon-link"
-              size="small"
-            ></el-button>
-            <el-popconfirm title="确定删除这个版本吗？" @onConfirm="onDeleteClick(item)">
+        <div @mouseenter="hoverIndex = index" @mouseleave="hoverIndex = null">
+          <el-card>
+            <div class="first-line">
+              <main-title>{{ item.version }} ( build {{ item.build }} )</main-title>
               <el-button
-                slot="reference"
                 type="primary"
-                icon="el-icon-delete"
+                :icon="item.isDefault ? `el-icon-star-off` : `el-icon-star-on`"
+                circle
+                size="small"
+                v-show="index == hoverIndex || item.isDefault"
+                @click="onTopClick(item)"
+              ></el-button>
+            </div>
+            <p>
+              <text-body>{{ item.vdesc }}</text-body>
+            </p>
+            <div style="margin-bottom: 16px">
+              <el-radio-group v-model="item.branch" size="small" @change="onVersionChanged(item)">
+                <el-radio-button label="alpha"></el-radio-button>
+                <el-radio-button label="beta"></el-radio-button>
+                <el-radio-button label="rc"></el-radio-button>
+              </el-radio-group>
+            </div>
+            <el-button-group>
+              <el-button
+                @click="onEditClick(item)"
+                type="primary"
+                icon="el-icon-edit"
                 size="small"
               ></el-button>
-            </el-popconfirm>
-          </el-button-group>
-        </el-card>
+              <el-button
+                @click="onDownloadClick(item)"
+                type="primary"
+                icon="el-icon-download"
+                size="small"
+              ></el-button>
+              <el-button
+                @click="onLinkClick(item)"
+                type="primary"
+                icon="el-icon-link"
+                size="small"
+              ></el-button>
+              <el-popconfirm title="确定删除这个版本吗？" @onConfirm="onDeleteClick(item)">
+                <el-button
+                  slot="reference"
+                  type="primary"
+                  icon="el-icon-delete"
+                  size="small"
+                ></el-button>
+              </el-popconfirm>
+            </el-button-group>
+          </el-card>
+        </div>
       </el-timeline-item>
     </el-timeline>
     <el-button v-if="!isPageEnd" type="info" round style="margin-left: 70px" @click="loadMore">
@@ -71,7 +83,8 @@ export default {
       page: 1,
       size: 10,
       isPageEnd: true,
-      branch: 'alpha'
+      branch: 'alpha',
+      hoverIndex: null
     };
   },
   watch: {
@@ -86,15 +99,20 @@ export default {
       this.fetchVersionList(1);
     }
     //app-upgrade
-    this.$EventBus.$on("app-upgrade", () => {
+    this.$EventBus.$on('app-upgrade', () => {
       this.fetchVersionList(1);
     });
   },
   methods: {
-    confirmText() {
-      console.log("asdasd");
+    onTopClick(item) {
+      //todo 置顶该版本作为默认下载版本
     },
-    onLinkClick(item) {},
+    confirmText() {
+      console.log('asdasd');
+    },
+    onLinkClick(item) {
+      console.log(item);
+    },
     onDeleteClick(item) {
       apiApp.versionDelete(item.id).then((resp) => {
         if (resp.data.code == 200) {
@@ -159,4 +177,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.first-line {
+  @include flexBetween;
+  align-items: flex-start;
+  height: 24px;
+}
 </style>
