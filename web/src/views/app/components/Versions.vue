@@ -136,7 +136,8 @@ export default {
       });
     },
     onLinkClick(item) {
-      console.log(item);
+      //TODO: 版本数据里加入短连接url
+      //TODO: 下载的地址域名应该用服务器返回，并且是全局config动态拼接
     },
     onDeleteClick(item) {
       apiApp.versionDelete(item.id).then((resp) => {
@@ -146,7 +147,6 @@ export default {
       });
     },
     onEditClick(item) {
-      console.log(item);
       this.editVersion = item;
       this.isEditing = true;
     },
