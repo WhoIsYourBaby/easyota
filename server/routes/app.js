@@ -371,7 +371,7 @@ router.post('/version/update', async (ctx, next) => {
   );
   const verInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select * from app_version where id=? and user_id=?',
+    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where id=? and user_id=?',
     [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {

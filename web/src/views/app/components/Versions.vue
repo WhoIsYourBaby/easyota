@@ -69,13 +69,22 @@
     <el-button v-if="!isPageEnd" type="info" round style="margin-left: 70px" @click="loadMore">
       加载更多版本
     </el-button>
+    <version-update
+      :data="editVersion"
+      :visible="isEditing"
+      @on-finish="onVersionEdited"
+    ></version-update>
   </div>
 </template>
 
 <script>
 import apiApp from '@/api/app';
 import {formatDate} from '@/utils/validate';
+import VersionUpdate from './VersionUpdate';
 export default {
+  components: {
+    VersionUpdate
+  },
   props: {
     appId: {
       type: Number
@@ -88,7 +97,9 @@ export default {
       size: 10,
       isPageEnd: true,
       branch: 'alpha',
-      hoverIndex: null
+      hoverIndex: null,
+      editVersion: {},
+      isEditing: false
     };
   },
   watch: {
@@ -108,6 +119,15 @@ export default {
     });
   },
   methods: {
+    onVersionEdited(verData) {
+      if (verData) {
+        const index = this.versionList.findIndex((item) => {
+          return item.id == verData.id;
+        });
+        this.versionList.splice(index, 1, verData);
+      }
+      this.isEditing = false;
+    },
     onTopClick(item) {
       apiApp.versionDefault({appId: item.appId, verId: item.id}).then((resp) => {
         if (resp.data && resp.data.code == 200) {
@@ -125,7 +145,11 @@ export default {
         }
       });
     },
-    onEditClick(item) {},
+    onEditClick(item) {
+      console.log(item);
+      this.editVersion = item;
+      this.isEditing = true;
+    },
     onDownloadClick(item) {
       window.open(item.binUrl);
     },
