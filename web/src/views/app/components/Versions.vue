@@ -112,14 +112,7 @@ export default {
         vdesc: item.vdesc,
         branch: item.branch
       };
-      apiApp.versionUpdate(params).then((resp) => {
-        if (resp.data.code == 200) {
-          this.$message({
-            message: '更新成功',
-            type: 'success'
-          });
-        }
-      });
+      apiApp.versionUpdate(params);
     },
     loadMore() {
       this.fetchVersionList(this.page + 1);
