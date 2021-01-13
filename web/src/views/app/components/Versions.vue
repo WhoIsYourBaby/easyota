@@ -115,9 +115,6 @@ export default {
         }
       });
     },
-    confirmText() {
-      console.log('asdasd');
-    },
     onLinkClick(item) {
       console.log(item);
     },
