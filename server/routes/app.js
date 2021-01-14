@@ -99,6 +99,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     return;
   }
   const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
+  const webDomain = ctx.request.protocol + '://' + ctx.state.config.web_host;
   const appPath = ctx.file.path;
   const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
@@ -135,7 +136,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortDomain: domain
+      shortDomain: webDomain
     };
   } else {
     appBody = {
@@ -149,7 +150,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortDomain: domain
+      shortDomain: webDomain
     };
   }
   ctx.body = {
@@ -541,7 +542,7 @@ function saveIcon(iconData) {
 }
 
 function appendHostToShort(ctx, short) {
-  const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
+  const domain = ctx.request.protocol + '://' + ctx.state.config.web_host;
   const url = domain + '/' + short;
   return url;
 }
