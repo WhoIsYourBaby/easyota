@@ -5,8 +5,8 @@
       <div class="attrs">
         <subtitle>中电达康</subtitle>
         <div>
-          <el-link type="info" :href="data.short" target="_blank">
-            {{ rootUrl }}/{{ data.short }}
+          <el-link type="info" :href="data.shortUrl" target="_blank">
+            {{ data.shortUrl }}
           </el-link>
         </div>
         <text-body>{{ data.bundleId }}</text-body>

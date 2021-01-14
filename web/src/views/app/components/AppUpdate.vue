@@ -18,7 +18,7 @@
           Version{{ data.version }}+{{ data.build }}
         </text-body>
         <el-input placeholder="短连接" v-model="vinfo.short" style="margin: 0px 0px 30px 0px">
-          <template slot="prepend">{{ rootUrl }}/</template>
+          <template slot="prepend">{{ vinfo.shortDomain }}/</template>
         </el-input>
         <el-radio-group
           v-model="vinfo.branch"

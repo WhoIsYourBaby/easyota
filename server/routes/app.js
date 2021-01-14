@@ -135,7 +135,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortUrl: appInDb.length === 0 ? null : appendHostToShort(ctx, appInDb[0].short)
+      shortDomain: domain
     };
   } else {
     appBody = {
@@ -149,7 +149,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortUrl: appInDb.length === 0 ? null : appendHostToShort(ctx, appInDb[0].short)
+      shortDomain: domain
     };
   }
   ctx.body = {
