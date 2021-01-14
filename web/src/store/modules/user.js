@@ -3,12 +3,7 @@ import {getToken, setToken, removeToken} from '@/utils/auth';
 import {resetRouter} from '@/router';
 
 const getDefaultState = () => {
-  return {
-    email: '',
-    nickname: '',
-    avatar: '',
-    type: ''
-  };
+  return {};
 };
 
 const state = getDefaultState();
