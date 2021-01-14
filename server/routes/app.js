@@ -450,6 +450,9 @@ router.get('/version/list', async (ctx, next) => {
     'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, a.is_default as isDefault, b.short from app_version a, app b where a.app_id=? and a.user_id=? and a.app_id=b.id order by id desc limit ?,?;',
     [appId, ctx.state.user.id, start, size]
   );
+  versionsInDb.forEach((item) => {
+    item.shortUrl = appendHostToShort(ctx, item.short);
+  });
   ctx.body = {
     code: 200,
     msg: 'ok',
@@ -469,6 +472,10 @@ router.get('/version', async (ctx, next) => {
     'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, b.short from app_version a, app b where id=? and user_id=? and a.app_id=b.id',
     [qbody.verId, ctx.state.user.id]
   );
+  const body = versionsInDb.length > 0 ? versionsInDb[0] : null;
+  if (body) {
+    body.shortUrl = appendHostToShort(ctx, body.short);
+  }
   ctx.body = {
     code: 200,
     msg: 'ok',
