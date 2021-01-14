@@ -8,7 +8,8 @@ import getPageTitle from '@/utils/get-page-title';
 
 NProgress.configure({showSpinner: false}); // NProgress Configuration
 
-const whiteList = ['/login']; // no redirect whitelist
+const routesWithoutToken = ['/login', '/404']; //dont need token
+const routesWithToken = ['/', '/dashboard'];
 
 router.beforeEach(async (to, from, next) => {
   // start progress bar
@@ -45,16 +46,23 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    /* has no token*/
-
-    if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
-      next();
-    } else {
-      // other pages that do not have permission to access are redirected to the login page.
+    if (routesWithToken.indexOf(to.path) !== -1 || to.path.startsWith('/app/')) {
       next(`/login?redirect=${to.path}`);
       NProgress.done();
+    } else {
+      next();
     }
+    /* has no token*/
+    
+
+    // if (routesWithoutToken.indexOf(to.path) !== -1) {
+    //   // in the free login routesWithoutToken, go directly
+    //   next();
+    // } else {
+    //   // other pages that do not have permission to access are redirected to the login page.
+      // next(`/login?redirect=${to.path}`);
+      // NProgress.done();
+    // }
   }
 });
 

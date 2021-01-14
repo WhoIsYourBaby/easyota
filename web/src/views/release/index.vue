@@ -1,5 +1,8 @@
 <template>
-  <div>{{ $route.params.short }}</div>
+  <div>
+    <div>{{ $route.params.short }}</div>
+    <div>{{ $route.params.verId }}</div>
+  </div>
 </template>
 
 <script>
