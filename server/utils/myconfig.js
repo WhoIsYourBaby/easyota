@@ -1,3 +1,4 @@
 module.exports = {
-  domain: 'http://localhost:' + (process.env.PORT || '3000')
+  api_host: 'localhost:3000',
+  web_host: 'localhost:9528',
 };

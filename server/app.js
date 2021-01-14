@@ -20,7 +20,6 @@ const dbconn = require('./middle/dbconn');
 app.use(async (ctx, next) => {
   const start = new Date();
   ctx.state.config = myconfig;
-  console.log(ctx.state.config);
   await next();
   const ms = new Date() - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);

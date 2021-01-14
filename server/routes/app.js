@@ -39,10 +39,14 @@ router.get('/', async (ctx, next) => {
     'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where id=? and user_id=?',
     [appId, ctx.state.user.id]
   );
+  const body = appInDb.length > 0 ? appInDb[0] : null;
+  if (body) {
+    body.shortUrl = appendHostToShort(ctx, body.short);
+  }
   ctx.body = {
     code: 200,
     msg: 'ok',
-    body: appInDb.length > 0 ? appInDb[0] : null
+    body: body
   };
 });
 
@@ -61,6 +65,9 @@ router.get('/list', async (ctx, next) => {
       'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
   }
   const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
+  apps.forEach((item) => {
+    item.shortUrl = appendHostToShort(ctx, item.short);
+  });
   ctx.body = {
     code: 200,
     msg: 'ok',
@@ -91,7 +98,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     };
     return;
   }
-  const domain = ctx.request.origin;
+  const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
   const appPath = ctx.file.path;
   const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
@@ -104,7 +111,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     'insert into upload (url, path, user_id) values (?, ?, ?)',
     [appUrl, appPath, ctx.state.user.id]
   );
-  const insertIcon = await dbhealper.makePromise(
+  await dbhealper.makePromise(
     ctx.state.sqlconn,
     'insert into upload (url, path, user_id) values (?, ?, ?)',
     [iconUrl, iconPath, ctx.state.user.id]
@@ -127,7 +134,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       build: appinfo.versionCode,
       uploadId: insertApp.insertId,
       branch: 'alpha',
-      short: appInDb.length === 0 ? null : appInDb[0].short
+      short: appInDb.length === 0 ? null : appInDb[0].short,
+      shortUrl: appInDb.length === 0 ? null : appendHostToShort(ctx, appInDb[0].short)
     };
   } else {
     appBody = {
@@ -140,7 +148,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       build: appinfo.CFBundleVersion,
       uploadId: insertApp.insertId,
       branch: 'alpha',
-      short: appInDb.length === 0 ? null : appInDb[0].short
+      short: appInDb.length === 0 ? null : appInDb[0].short,
+      shortUrl: appInDb.length === 0 ? null : appendHostToShort(ctx, appInDb[0].short)
     };
   }
   ctx.body = {
@@ -204,6 +213,7 @@ router.post('/create', async (ctx, next) => {
     appDesc: qbody.appDesc,
     vdesc: qbody.vdesc,
     short: qbody.short,
+    shortUrl: appendHostToShort(ctx, qbody.short),
     name: qbody.name,
     appPath: appPath,
     iconUrl: qbody.icon,
@@ -252,10 +262,12 @@ router.post('/update', async (ctx, next) => {
     'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId from app where id=? and user_id=?;',
     [qbody.appId, ctx.state.user.id]
   );
+  const body = appInDb[0];
+  body.shortUrl = appendHostToShort(ctx, body.short);
   ctx.body = {
     code: 200,
     msg: 'ok',
-    body: appInDb[0]
+    body: body
   };
 });
 
@@ -435,7 +447,7 @@ router.get('/version/list', async (ctx, next) => {
   const start = (page - 1) * size;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and user_id=? order by id desc limit ?,?;',
+    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, a.is_default as isDefault, b.short from app_version a, app b where a.app_id=? and a.user_id=? and a.app_id=b.id order by id desc limit ?,?;',
     [appId, ctx.state.user.id, start, size]
   );
   ctx.body = {
@@ -454,7 +466,7 @@ router.get('/version', async (ctx, next) => {
   const qbody = ctx.request.query;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon from app_version where id=? and user_id=?',
+    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, b.short from app_version a, app b where id=? and user_id=? and a.app_id=b.id',
     [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {
@@ -519,6 +531,12 @@ function saveIcon(iconData) {
     }
   });
   return filename;
+}
+
+function appendHostToShort(ctx, short) {
+  const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
+  const url = domain + '/' + short;
+  return url;
 }
 
 module.exports = router;
