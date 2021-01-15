@@ -6,6 +6,7 @@
 </template>
 
 <script>
+// 同时支持mobile、desktop
 export default {
   mounted() {
     console.log(this.$route.params);

@@ -31,8 +31,7 @@
           <el-upload
             :before-upload="beforeUpload"
             :http-request="myUpload"
-            :on-progress="onProgress"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action=""
           >
             <el-button size="medium" type="primary" style="width: 170px">点击上传ipa/apk</el-button>
           </el-upload>
@@ -59,7 +58,6 @@ export default {
     return {
       appList: [],
       isUploading: false,
-      uploadText: '点击上传ipa/apk',
       showUpdate: false,
       showNewApp: false,
       appInfo: {}
@@ -142,9 +140,6 @@ export default {
           this.showUpdate = true;
         }
       });
-    },
-    onProgress(event, file, filelist) {
-      console.log(event);
     },
     onAppFinish(isNew) {
       if (isNew) {
