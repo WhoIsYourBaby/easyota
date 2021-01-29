@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div
-      v-if="device === 'mobile' && sidebar.opened"
+      v-if="device === 'mobile'"
       class="drawer-bg"
       @click="handleClickOutside"
     />
@@ -39,17 +39,13 @@ export default {
     },
     classObj() {
       return {
-        hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opened,
+        openSidebar: true,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       };
     }
   },
   methods: {
-    handleClickOutside() {
-      this.$store.dispatch('settings/closeSideBar', {withoutAnimation: false});
-    }
   }
 };
 </script>

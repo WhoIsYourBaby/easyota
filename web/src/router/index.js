@@ -72,11 +72,6 @@ export const constantRoutes = [
     component: () => import('@/views/release/index'),
     hidden: true
   },
-  {
-    path: '/:short/:verId',
-    component: () => import('@/views/release/index'),
-    hidden: true
-  },
   // 404 page must be placed at the end !!!
   {path: '*', redirect: '/404', hidden: true}
 ];

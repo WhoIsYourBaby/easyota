@@ -86,7 +86,7 @@ export default {
       return variables;
     },
     isCollapse() {
-      return !this.settings.sidebar.opened;
+      return false;
     }
   },
   created() {

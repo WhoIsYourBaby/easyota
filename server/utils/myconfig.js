@@ -1,4 +1,4 @@
 module.exports = {
-  api_host: 'localhost:3000',
-  web_host: 'localhost:9528',
+  api_host: '192.168.8.14:3000',
+  web_host: '192.168.8.14:9528',
 };
