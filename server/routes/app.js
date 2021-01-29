@@ -485,6 +485,83 @@ router.get('/version', async (ctx, next) => {
 });
 
 /**
+ * 无需登录
+ * 发布下载页面的调用接口
+ * 获取app和指定版本信息
+ * verUuid 和 branch二选一，或者都不传
+ * 如果仅传short参数会获取default版本或者最新版本
+ * @param {*} short
+ * @param {*} verUuid option，获取指定版本
+ * @param {*} branch option，获取指定分支的最新版本
+ */
+router.get('/release', async (ctx, next) => {
+  const qbody = ctx.request.query;
+  const short = qbody.short;
+  const verUuid = qbody.verUuid;
+  const branch = qbody.branch;
+  const appInDb = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where short=?;',
+    [short]
+  );
+  const app = appInDb.length > 0 ? appInDb[0] : null;
+  if (!app) {
+    ctx.body = {
+      code: 601,
+      msg: '该App不存在或者不属于你'
+    };
+    return;
+  }
+  app.shortUrl = appendHostToShort(ctx, app.short);
+  let version = undefined;
+  if (verUuid) {
+    //如果有指定版本，直接返回该版本
+    const verInDb = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and uuid=?',
+      [app.id, verUuid]
+    );
+    version = verInDb.length > 0 ? verInDb[0] : null;
+  } else {
+    //0 如果有指定branch，则优先获取branch的最新版本
+    if (branch) {
+      let verInDb = await dbhealper.makePromise(
+        ctx.state.sqlconn,
+        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and branch=? order by id DESC limit 1',
+        [app.id, branch]
+      );
+      version = verInDb.length > 0 ? verInDb[0] : null;
+    } else {
+      //1 没有指定版本，优返回default版本
+      let verInDb = await dbhealper.makePromise(
+        ctx.state.sqlconn,
+        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and is_default=1',
+        [app.id]
+      );
+      if (verInDb.length > 0) {
+        version = verInDb[0];
+      } else {
+        //2 没有default版本则返回最新的版本
+        //3 如果还是没查到相应版本则返回null
+        verInDb = await dbhealper.makePromise(
+          ctx.state.sqlconn,
+          'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? order by id DESC limit 1',
+          [app.id]
+        );
+        version = verInDb.length > 0 ? verInDb[0] : null;
+      }
+    }
+  }
+  app.version = version;
+
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: app
+  };
+});
+
+/**
  * 已经在外面判断app存在与否
  * @param {*} conn mysql链接
  * @param {*} user token解析的用户

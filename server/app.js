@@ -76,7 +76,7 @@ app.use(
   koajwt({
     secret: tokenKey
   }).unless({
-    path: ['/user/login', '/user/register']
+    path: ['/user/login', '/user/register', '/app/release']
   })
 );
 
