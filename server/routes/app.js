@@ -501,7 +501,7 @@ router.get('/release', async (ctx, next) => {
   const branch = qbody.branch;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where short=?;',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, tmobile, tdesktop from app where short=?;',
     [short]
   );
   const app = appInDb.length > 0 ? appInDb[0] : null;

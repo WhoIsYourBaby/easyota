@@ -74,6 +74,13 @@ const app = {
       method: 'post',
       data
     });
+  },
+  release(data) {
+    return request({
+      url: '/app/release',
+      method: 'get',
+      params: data
+    });
   }
 };
 

@@ -1,7 +1,7 @@
 import store from '@/store'
 
 const { body } = document
-const WIDTH = 500 // refer to Bootstrap's responsive design
+const WIDTH = 600 // 手机和桌面的界定标准宽度
 
 export default {
   beforeMount() {

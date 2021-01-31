@@ -136,7 +136,7 @@ export default {
       });
     },
     onLinkClick(item) {
-      window.open(item.shortUrl);
+      window.open(item.shortUrl + `?verUuid=${item.uuid}`);
     },
     onDeleteClick(item) {
       apiApp.versionDelete(item.id).then((resp) => {
