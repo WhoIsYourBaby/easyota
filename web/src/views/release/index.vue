@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div>{{ $route.params.short }}</div>
-    <div>{{ $route.query.verUuid }}</div>
-    <div>{{ isMobile ? 'mobile' : 'desktop' }}</div>
     <component :is="currentComp" v-if="releaseData" :data="releaseData"></component>
   </div>
 </template>
