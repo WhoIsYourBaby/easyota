@@ -106,11 +106,12 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   const iconPath = saveIcon(appinfo.icon);
   const iconUrl = domain + iconPath;
   const appUrl = domain + '/upload/' + ctx.file.filename;
+  const size = ctx.file.size;
   //插入上传的app到upload表
   const insertApp = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'insert into upload (url, path, user_id) values (?, ?, ?)',
-    [appUrl, appPath, ctx.state.user.id]
+    'insert into upload (url, path, user_id, size) values (?, ?, ?, ?)',
+    [appUrl, appPath, ctx.state.user.id, size]
   );
   await dbhealper.makePromise(
     ctx.state.sqlconn,
@@ -189,6 +190,7 @@ router.post('/create', async (ctx, next) => {
   let platform = 'unknown';
   const appPath = uploadInDb[0].path;
   const appUrl = uploadInDb[0].url;
+  const size = uploadInDb[0].size;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -221,6 +223,7 @@ router.post('/create', async (ctx, next) => {
     binUrl: appUrl,
     bundleId: bundleId,
     platform: platform,
+    size: size,
     version:
       platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
@@ -587,7 +590,7 @@ async function createApp(conn, user, appInfo) {
   const verUuid = UUID.v1().replace(/-/g, '');
   const verInsert = await dbhealper.makePromise(
     conn,
-    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id, size) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
       appId,
@@ -598,7 +601,8 @@ async function createApp(conn, user, appInfo) {
       appInfo.binUrl,
       appInfo.mainfest,
       appInfo.iconUrl,
-      user.id
+      user.id,
+      size
     ]
   );
 }
