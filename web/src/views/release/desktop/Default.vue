@@ -1,7 +1,7 @@
 <template>
   <div class="mydefault">
     <el-image
-      style="width: 120px; height: 120px; margin-top: 120px"
+      style="width: 120px; height: 120px; margin-top: 100px"
       :src="data.icon"
       fit="fill"
     ></el-image>
@@ -21,7 +21,7 @@
       :logoSrc="data.icon"
       :margin="8"
     ></vue-qr>
-    <div style="width: 70%">
+    <div style="width: 70%; max-width: 800px">
       <el-divider></el-divider>
       <main-title>更新说明</main-title>
       <text-body style="margin-top: 20px">{{ this.data.version.vdesc }}</text-body>
@@ -31,6 +31,7 @@
       <main-title>应用介绍</main-title>
       <text-body style="margin-top: 20px">{{ this.data.adesc }}</text-body>
     </div>
+    <div style="margin-bottom: 100px"></div>
   </div>
 </template>
 
