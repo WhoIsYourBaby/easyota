@@ -9,7 +9,9 @@
     <text-label style="margin-top: 20px">
       版本：{{ this.data.version.version }} (build {{ this.data.version.build }})
     </text-label>
-    <text-label style="margin-top: 10px">大小：39.1 MB</text-label>
+    <text-label style="margin-top: 10px">
+      大小：{{ Number(this.data.version.size / 1024 / 1024).toFixed(1) }} MB
+    </text-label>
     <text-label style="margin-top: 10px">
       更新时间：{{ formatDate(this.data.version.createTime) }}
     </text-label>

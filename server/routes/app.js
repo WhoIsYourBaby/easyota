@@ -190,7 +190,6 @@ router.post('/create', async (ctx, next) => {
   let platform = 'unknown';
   const appPath = uploadInDb[0].path;
   const appUrl = uploadInDb[0].url;
-  const size = uploadInDb[0].size;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -223,7 +222,6 @@ router.post('/create', async (ctx, next) => {
     binUrl: appUrl,
     bundleId: bundleId,
     platform: platform,
-    size: size,
     version:
       platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
@@ -325,6 +323,7 @@ router.post('/version/create', async (ctx, next) => {
   let platform = 'unknown';
   const appPath = uploadInDb[0].path;
   const appUrl = uploadInDb[0].url;
+  const size = uploadInDb[0].size;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -340,7 +339,7 @@ router.post('/version/create', async (ctx, next) => {
   const iconUrl = qbody.icon;
   const insertResult = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, mainfest, icon, user_id, size) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
       qbody.appId,
@@ -351,7 +350,8 @@ router.post('/version/create', async (ctx, next) => {
       appUrl,
       null,
       iconUrl,
-      ctx.state.user.id
+      ctx.state.user.id,
+      size
     ]
   );
   ctx.body = {
@@ -367,7 +367,8 @@ router.post('/version/create', async (ctx, next) => {
       branch: qbody.branch,
       binUrl: appUrl,
       icon: iconUrl,
-      mainfest: null
+      mainfest: null,
+      size: size
     }
   };
 });
@@ -387,7 +388,7 @@ router.post('/version/update', async (ctx, next) => {
   );
   const verInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where id=? and user_id=?',
+    'select id, uuid, create_time as createTime, app_id as appId, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault, size from app_version where id=? and user_id=?',
     [qbody.verId, ctx.state.user.id]
   );
   ctx.body = {
@@ -451,7 +452,7 @@ router.get('/version/list', async (ctx, next) => {
   const start = (page - 1) * size;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, a.is_default as isDefault, b.short from app_version a, app b where a.app_id=? and a.user_id=? and a.app_id=b.id order by id desc limit ?,?;',
+    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, a.is_default as isDefault, a.size, b.short from app_version a, app b where a.app_id=? and a.user_id=? and a.app_id=b.id order by id desc limit ?,?;',
     [appId, ctx.state.user.id, start, size]
   );
   versionsInDb.forEach((item) => {
@@ -473,7 +474,7 @@ router.get('/version', async (ctx, next) => {
   const qbody = ctx.request.query;
   const versionsInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, b.short from app_version a, app b where id=? and user_id=? and a.app_id=b.id',
+    'select a.id, a.uuid, a.create_time as createTime, a.app_id as appId, a.version, a.build, a.vdesc, a.branch, a.bin_url as binUrl, a.mainfest, a.icon, a.size, b.short from app_version a, app b where id=? and user_id=? and a.app_id=b.id',
     [qbody.verId, ctx.state.user.id]
   );
   const body = versionsInDb.length > 0 ? versionsInDb[0] : null;
@@ -521,7 +522,7 @@ router.get('/release', async (ctx, next) => {
     //如果有指定版本，直接返回该版本
     const verInDb = await dbhealper.makePromise(
       ctx.state.sqlconn,
-      'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and uuid=?',
+      'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault, size from app_version where app_id=? and uuid=?',
       [app.id, verUuid]
     );
     version = verInDb.length > 0 ? verInDb[0] : null;
@@ -530,7 +531,7 @@ router.get('/release', async (ctx, next) => {
     if (branch) {
       let verInDb = await dbhealper.makePromise(
         ctx.state.sqlconn,
-        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and branch=? order by id DESC limit 1',
+        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault, size from app_version where app_id=? and branch=? order by id DESC limit 1',
         [app.id, branch]
       );
       version = verInDb.length > 0 ? verInDb[0] : null;
@@ -538,7 +539,7 @@ router.get('/release', async (ctx, next) => {
       //1 没有指定版本，优返回default版本
       let verInDb = await dbhealper.makePromise(
         ctx.state.sqlconn,
-        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? and is_default=1',
+        'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault, size from app_version where app_id=? and is_default=1',
         [app.id]
       );
       if (verInDb.length > 0) {
@@ -548,7 +549,7 @@ router.get('/release', async (ctx, next) => {
         //3 如果还是没查到相应版本则返回null
         verInDb = await dbhealper.makePromise(
           ctx.state.sqlconn,
-          'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault from app_version where app_id=? order by id DESC limit 1',
+          'select id, uuid, create_time as createTime, version, build, vdesc, branch, bin_url as binUrl, mainfest, icon, is_default as isDefault, size from app_version where app_id=? order by id DESC limit 1',
           [app.id]
         );
         version = verInDb.length > 0 ? verInDb[0] : null;
