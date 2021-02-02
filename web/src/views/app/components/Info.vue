@@ -26,7 +26,7 @@
       </div>
       <vue-qr
         class="bicode"
-        :text="rootUrl + '/' + data.short"
+        :text="data.shortUrl"
         :size="150"
         :logoSrc="data.icon"
         :margin="8"

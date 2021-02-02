@@ -43,8 +43,10 @@ export default {
   },
   methods: {
     onInstallClick() {
-      console.log(this.data);
       if (this.data.platform == 'ios') {
+        const manifest = this.data.version.manifest;
+        const otaurl = `itms-services://?action=download-manifest&url=${manifest}`;
+        window.open(otaurl);
       } else {
         window.open(this.data.version.binUrl);
       }
