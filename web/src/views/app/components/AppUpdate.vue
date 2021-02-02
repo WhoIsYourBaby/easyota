@@ -85,7 +85,8 @@ export default {
           appDesc: this.vinfo.adesc,
           vdesc: this.vinfo.vdesc,
           uploadId: this.vinfo.uploadId,
-          icon: this.vinfo.icon
+          icon: this.vinfo.icon,
+          manifest: this.vinfo.manifest
         };
         apiApp.create(data).then(this.onResponse);
       } else {
@@ -96,7 +97,8 @@ export default {
           short: this.vinfo.short,
           vdesc: this.vinfo.vdesc,
           icon: this.vinfo.icon,
-          branch: this.vinfo.branch
+          branch: this.vinfo.branch,
+          manifest: this.vinfo.manifest
         };
         apiApp.versionCreate(data).then(this.onResponse);
       }

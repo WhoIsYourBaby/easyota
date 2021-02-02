@@ -136,9 +136,9 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
     manifestPlist.items[0].metadata['title'] = appName;
     const muuid = UUID.v1().replace(/-/g, '');
     const descPath = path.join(__dirname, `../public/upload/${muuid}.plist`);
-    const manifestString = plist.build(manifestPlist)
+    const manifestString = plist.build(manifestPlist);
     fs.writeFileSync(descPath, manifestString);
-    manifest = descPath;
+    manifest = domain + `/upload/${muuid}.plist`;
   }
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
@@ -192,6 +192,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
  * name
  * icon
  * uploadId
+ * manifest
  */
 router.post('/create', async (ctx, next) => {
   // const testurl = ctx.session.iconUrl.replace(/\//g, '/');
@@ -212,6 +213,7 @@ router.post('/create', async (ctx, next) => {
   let platform = 'unknown';
   const appPath = uploadInDb[0].path;
   const appUrl = uploadInDb[0].url;
+  const size = uploadInDb[0].size;
   if (appPath.match('(.apk$)')) {
     platform = 'android';
   }
@@ -246,7 +248,8 @@ router.post('/create', async (ctx, next) => {
     platform: platform,
     version:
       platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
-    build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion
+    build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion,
+    manifest: qbody.manifest
   };
   await createApp(ctx.state.sqlconn, ctx.state.user, appSubmit);
   ctx.body = {
@@ -326,6 +329,7 @@ router.post('/delete', async (ctx, next) => {
  * appId
  * icon
  * uploadId
+ * manifest
  */
 router.post('/version/create', async (ctx, next) => {
   const qbody = ctx.request.body;
@@ -370,7 +374,7 @@ router.post('/version/create', async (ctx, next) => {
       qbody.vdesc,
       qbody.branch,
       appUrl,
-      null,
+      qbody.manifest,
       iconUrl,
       ctx.state.user.id,
       size
@@ -389,7 +393,7 @@ router.post('/version/create', async (ctx, next) => {
       branch: qbody.branch,
       binUrl: appUrl,
       icon: iconUrl,
-      manifest: null,
+      manifest: qbody.manifest,
       size: size
     }
   };
@@ -613,7 +617,7 @@ async function createApp(conn, user, appInfo) {
   const verUuid = UUID.v1().replace(/-/g, '');
   const verInsert = await dbhealper.makePromise(
     conn,
-    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, manifest, icon, user_id, size) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, manifest, icon, user_id, size, manifest) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
       appId,
@@ -625,7 +629,8 @@ async function createApp(conn, user, appInfo) {
       appInfo.manifest,
       appInfo.iconUrl,
       user.id,
-      size
+      size.size,
+      appInfo.manifest
     ]
   );
 }
