@@ -27,14 +27,13 @@ router.beforeEach(async (to, from, next) => {
       next({path: '/'});
       NProgress.done();
     } else {
-      const hasGetUserInfo = store.state.user;
-      if (hasGetUserInfo.email) {
+      let userInfo = store.state.user;
+      if (userInfo.email) {
         next();
       } else {
         try {
           // get user info
           await store.dispatch('user/getUser');
-
           next();
         } catch (error) {
           // remove token and go to login page to re-login
@@ -53,15 +52,14 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
     /* has no token*/
-    
 
     // if (routesWithoutToken.indexOf(to.path) !== -1) {
     //   // in the free login routesWithoutToken, go directly
     //   next();
     // } else {
     //   // other pages that do not have permission to access are redirected to the login page.
-      // next(`/login?redirect=${to.path}`);
-      // NProgress.done();
+    // next(`/login?redirect=${to.path}`);
+    // NProgress.done();
     // }
   }
 });

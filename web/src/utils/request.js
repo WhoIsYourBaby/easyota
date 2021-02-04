@@ -72,7 +72,8 @@ service.interceptors.response.use(
           });
         });
       }
-      return Promise.reject(new Error(res.message || 'Error'));
+      // const err = new Error(res.msg || 'Error');
+      return Promise.reject(res.msg  || '未知错误');
     } else {
       return response;
     }

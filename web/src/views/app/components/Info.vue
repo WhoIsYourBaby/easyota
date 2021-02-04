@@ -8,7 +8,7 @@
           :http-request="myUpload"
           action=""
           @on-progress="onProgress"
-          style="margin-top: 10px; width: 96px; height: 36px"
+          style="margin-top: 10px"
         >
           <el-button size="medium" type="primary">更新版本</el-button>
         </el-upload>
@@ -27,7 +27,7 @@
       <vue-qr
         class="bicode"
         :text="data.shortUrl || ''"
-        :size="150"
+        :size="168"
         :logoSrc="data.icon"
         :margin="8"
       ></vue-qr>
