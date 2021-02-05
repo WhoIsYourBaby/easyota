@@ -68,6 +68,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/admin',
+    component: Layout,
+    children: [
+      {
+        path: '/admin',
+        name: 'Admin',
+        component: () => import('@/views/admin/index'),
+        meta: {title: 'Admin', icon: 'form'}
+      }
+    ]
+  },
+  {
     path: '/:short',
     component: () => import('@/views/release/index'),
     hidden: true

@@ -18,6 +18,7 @@
           :item="route"
           :base-path="route.path"
           :isCollapse="isCollapse"
+          v-if="route.path == '/admin' && user.type == 'admin' || route.path != '/admin'"
         />
         <el-divider></el-divider>
         <sidebar-item
@@ -28,11 +29,7 @@
           :isCollapse="isCollapse"
         />
         <div class="myupload">
-          <el-upload
-            :before-upload="beforeUpload"
-            :http-request="myUpload"
-            action=""
-          >
+          <el-upload :before-upload="beforeUpload" :http-request="myUpload" action="">
             <el-button size="medium" type="primary" style="width: 170px">点击上传ipa/apk</el-button>
           </el-upload>
         </div>
@@ -43,7 +40,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex';
+import {mapState} from 'vuex';
 import Logo from './Logo';
 import SidebarItem from './SidebarItem';
 import variables from '@/styles/variables.scss';
@@ -65,6 +62,7 @@ export default {
   },
   computed: {
     ...mapState({
+      user: (state) => state.user,
       settings: (state) => state.settings
     }),
     routes() {
@@ -145,7 +143,7 @@ export default {
       if (isNew) {
         this.fetchAppList();
       } else {
-        this.$EventBus.$emit("app-upgrade");
+        this.$EventBus.$emit('app-upgrade');
       }
       this.showUpdate = false;
     }
