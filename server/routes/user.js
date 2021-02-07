@@ -2,6 +2,8 @@
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
+const path = require('path');
 
 router.prefix('/user');
 
@@ -29,7 +31,7 @@ router.post('/login', async (ctx, next) => {
         email: us.email,
         nickname: us.nickname,
         type: us.type,
-        avatar: us.avatar,
+        avatar: us.avatar
       }
     };
   } else {
@@ -57,20 +59,21 @@ router.post('/register', async (ctx, next) => {
   const password = qbody.password;
   const nickname = qbody.nickname;
   const domain = ctx.request.origin;
-  const avatar = qbody.avatar || (domain + '/user/avatar.png');
+  const avatar = qbody.avatar || domain + '/user/avatar.png';
   const query = 'select * from user where email=?;';
   const users = await dbhealper.makePromise(ctx.state.sqlconn, query, [email]);
   if (users.length > 0) {
     ctx.body = {code: 602, msg: '该邮箱地址已被他人注册', body: null};
   } else {
     const type = 'user';
-    const insert = 'insert into user (email, password, nickname, type, avatar) values (?, ?, ?, ?, ?)';
+    const insert =
+      'insert into user (email, password, nickname, type, avatar) values (?, ?, ?, ?, ?)';
     const insertResult = await dbhealper.makePromise(ctx.state.sqlconn, insert, [
       email,
       password,
       nickname,
       type,
-      avatar,
+      avatar
     ]);
     const payload = {
       exp: Date.now() + 1000 * 60 * 60 * 24 * 7,
@@ -96,7 +99,8 @@ router.post('/register', async (ctx, next) => {
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   if (user.type === 'admin') {
-    const chaptersQuery = 'select id, create_time as createTime, email, nickname, type, avatar from user;';
+    const chaptersQuery =
+      'select id, create_time as createTime, email, nickname, type, avatar from user;';
     const users = await dbhealper.makePromise(ctx.state.sqlconn, chaptersQuery);
     ctx.body = {
       code: 200,
@@ -106,6 +110,24 @@ router.get('/list', async (ctx, next) => {
   } else {
     ctx.body = {code: 601, msg: '您没有相应权限', body: null};
   }
+});
+
+
+/**
+ * 文件形式存储config
+ * 因为是一个公共访问资源
+ */
+router.post('/config', async (ctx, next) => {
+  const user = ctx.state.user;
+  const qbody = ctx.request.body;
+  const configStr = JSON.stringify(qbody);
+  const descPath = path.join(__dirname, `./config.json`);
+  fs.writeFileSync(descPath, configStr);
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: qbody
+  };
 });
 
 module.exports = router;

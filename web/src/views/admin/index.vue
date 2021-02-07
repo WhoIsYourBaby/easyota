@@ -6,7 +6,7 @@
           <el-switch v-model="form.allowRegister"></el-switch>
         </el-form-item>
         <el-form-item label="存储方式">
-          <el-radio-group v-model="form.store">
+          <el-radio-group v-model="form.store" @change="onStoreChanged">
             <el-radio label="local">本地存储</el-radio>
             <el-radio label="qiniu">七牛云OSS</el-radio>
             <el-radio label="ali">阿里云OSS</el-radio>
@@ -15,16 +15,32 @@
         </el-form-item>
         <div>
           <el-form-item label="key">
-            <el-input v-model="form.oss.key" placeholder="Access Key"></el-input>
+            <el-input
+              v-model="form.oss.key"
+              placeholder="Access Key"
+              :disabled="form.store == 'local'"
+            ></el-input>
           </el-form-item>
           <el-form-item label="secret">
-            <el-input v-model="form.oss.secret" placeholder="Secret Key"></el-input>
+            <el-input
+              v-model="form.oss.secret"
+              placeholder="Secret Key"
+              :disabled="form.store == 'local'"
+            ></el-input>
           </el-form-item>
           <el-form-item label="endpoint">
-            <el-input v-model="form.oss.endpoint"></el-input>
+            <el-input
+              v-model="form.oss.endpoint"
+              placeholder="Endpoint"
+              :disabled="form.store == 'local'"
+            ></el-input>
           </el-form-item>
           <el-form-item label="bucket">
-            <el-input v-model="form.oss.bucket"></el-input>
+            <el-input
+              v-model="form.oss.bucket"
+              placeholder="Bucket"
+              :disabled="form.store == 'local'"
+            ></el-input>
           </el-form-item>
         </div>
         <el-form-item>
@@ -38,6 +54,7 @@
 
 <script>
 import {mapState} from 'vuex';
+import request from '@/utils/request';
 
 export default {
   computed: {
@@ -51,16 +68,31 @@ export default {
         store: 'local',
         allowRegister: false,
         oss: {
-          key: '',
-          secret: '',
-          endpoint: '',
-          bucket: '',
-        },
+          key: null,
+          secret: null,
+          endpoint: null,
+          bucket: null
+        }
       }
     };
   },
   methods: {
-    onSubmit() {}
+    onStoreChanged() {
+      this.form.oss = {
+        key: null,
+        secret: null,
+        endpoint: null,
+        bucket: null
+      };
+    },
+    onSubmit() {
+      console.log(this.form);
+      request({
+        url: '/user/config',
+        method: 'post',
+        data: this.form
+      });
+    }
   }
 };
 </script>
