@@ -94,12 +94,29 @@ export default {
       };
     },
     onSubmit() {
-      console.log(this.form);
-      request({
-        url: '/user/config',
-        method: 'post',
-        data: this.form
-      });
+      this.$confirm('确定要修改配置项吗？后续系统将使用最新的配置项', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          request({
+            url: '/user/config',
+            method: 'post',
+            data: this.form
+          }).then((res) => {
+            this.$message({
+              type: 'success',
+              message: '设定成功'
+            });
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
     }
   }
 };
