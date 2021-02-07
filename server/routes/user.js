@@ -121,7 +121,7 @@ router.post('/config', async (ctx, next) => {
   if (user.type != 'admin') {
     ctx.body = {
       code: 601,
-      msg: '你没有权限',
+      msg: '你没有权限'
     };
     return;
   }
@@ -133,6 +133,17 @@ router.post('/config', async (ctx, next) => {
     code: 200,
     msg: 'ok',
     body: qbody
+  };
+});
+
+router.get('/config', async (ctx, next) => {
+  const descPath = path.join(__dirname, `./config.json`);
+  const configString = fs.readFileSync(descPath);
+  const config = JSON.parse(configString);
+  ctx.body = {
+    code: 200,
+    msg: 'ok',
+    body: config
   };
 });
 

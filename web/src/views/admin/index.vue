@@ -76,6 +76,14 @@ export default {
       }
     };
   },
+  mounted() {
+    request({
+      url: '/user/config',
+      method: 'get'
+    }).then((res) => {
+      this.form = res.data.body;
+    });
+  },
   methods: {
     onStoreChanged() {
       this.form.oss = {
