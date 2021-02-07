@@ -112,13 +112,19 @@ router.get('/list', async (ctx, next) => {
   }
 });
 
-
 /**
  * 文件形式存储config
  * 因为是一个公共访问资源
  */
 router.post('/config', async (ctx, next) => {
   const user = ctx.state.user;
+  if (user.type != 'admin') {
+    ctx.body = {
+      code: 601,
+      msg: '你没有权限',
+    };
+    return;
+  }
   const qbody = ctx.request.body;
   const configStr = JSON.stringify(qbody);
   const descPath = path.join(__dirname, `./config.json`);
