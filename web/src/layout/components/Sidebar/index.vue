@@ -18,7 +18,7 @@
           :item="route"
           :base-path="route.path"
           :isCollapse="isCollapse"
-          v-if="route.path == '/admin' && user.type == 'admin' || route.path != '/admin'"
+          v-if="(route.path == '/config' || route.path == '/users') && user.type == 'admin' || route.path != '/config'"
         />
         <el-divider></el-divider>
         <sidebar-item
