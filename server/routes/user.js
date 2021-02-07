@@ -1,9 +1,8 @@
 'use strict';
 const router = require('koa-router')();
 const dbhealper = require('../utils/dbhealper');
+const adminconfig = require('../utils/adminconfig');
 const jwt = require('jsonwebtoken');
-const fs = require('fs');
-const path = require('path');
 
 router.prefix('/user');
 
@@ -126,9 +125,7 @@ router.post('/config', async (ctx, next) => {
     return;
   }
   const qbody = ctx.request.body;
-  const configStr = JSON.stringify(qbody);
-  const descPath = path.join(__dirname, `./config.json`);
-  fs.writeFileSync(descPath, configStr);
+  adminconfig.setConfig(qbody);
   ctx.body = {
     code: 200,
     msg: 'ok',
@@ -137,9 +134,7 @@ router.post('/config', async (ctx, next) => {
 });
 
 router.get('/config', async (ctx, next) => {
-  const descPath = path.join(__dirname, `./config.json`);
-  const configString = fs.readFileSync(descPath);
-  const config = JSON.parse(configString);
+  const config = adminconfig.getConfig();
   ctx.body = {
     code: 200,
     msg: 'ok',
