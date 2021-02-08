@@ -95,16 +95,46 @@ router.post('/register', async (ctx, next) => {
   }
 });
 
+router.post('/delete', async (ctx, next) => {
+  const qbody = ctx.request.body;
+  if (ctx.state.user.type != 'admin') {
+    ctx.body = {code: 601, msg: '您没有相应权限'};
+    return;
+  }
+  const delId = `${qbody.id}`;
+  const delResult = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    "delete from user where id=?",
+    [delId]
+  );
+  ctx.body = {
+    code: 200,
+    msg: `${delResult.affectedRows}条数据被删除`
+  };
+});
+
 router.get('/list', async (ctx, next) => {
   const user = ctx.state.user;
   if (user.type === 'admin') {
-    const chaptersQuery =
-      'select id, create_time as createTime, email, nickname, type, avatar from user;';
-    const users = await dbhealper.makePromise(ctx.state.sqlconn, chaptersQuery);
+    const qbody = ctx.request.query;
+    const page = parseInt(qbody.page || 1);
+    const size = parseInt(qbody.size || 10);
+    const start = (page - 1) * size;
+    const users = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      "select id, create_time as createTime, email, nickname, type, avatar from user where type!='admin' limit ?,?;",
+      [start, size]
+    );
+    const ucount = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      "select count(*) from user where type!='admin'"
+    );
     ctx.body = {
       code: 200,
       msg: 'ok',
-      body: users
+      body: users,
+      isPageEnd: users.length < size,
+      count: ucount[0]['count(*)']
     };
   } else {
     ctx.body = {code: 601, msg: '您没有相应权限', body: null};
