@@ -17,56 +17,27 @@
           :key="route.path"
           :item="route"
           :base-path="route.path"
-          :isCollapse="isCollapse"
-          v-if="(route.path == '/config' || route.path == '/users') && user.type == 'admin' || route.path != '/config'"
         />
-        <el-divider></el-divider>
-        <sidebar-item
-          v-for="route in transformToRoutes(appList)"
-          :key="route.path"
-          :item="route"
-          :base-path="route.path"
-          :isCollapse="isCollapse"
-        />
-        <div class="myupload">
-          <el-upload :before-upload="beforeUpload" :http-request="myUpload" action="">
-            <el-button size="medium" type="primary" style="width: 170px">点击上传ipa/apk</el-button>
-          </el-upload>
-        </div>
       </el-menu>
     </el-scrollbar>
-    <app-update :data="appInfo" :visible="this.showUpdate" @on-finish="onAppFinish"></app-update>
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapGetters} from 'vuex';
 import Logo from './Logo';
 import SidebarItem from './SidebarItem';
 import variables from '@/styles/variables.scss';
-import apiApp from '@/api/app';
-import Layout from '@/layout';
-import request from '@/utils/request';
-import AppUpdate from '@/views/app/components/AppUpdate';
 
 export default {
-  components: {SidebarItem, Logo, AppUpdate},
-  data() {
-    return {
-      appList: [],
-      isUploading: false,
-      showUpdate: false,
-      showNewApp: false,
-      appInfo: {}
-    };
-  },
+  components: {SidebarItem, Logo},
   computed: {
-    ...mapState({
-      user: (state) => state.user,
-      settings: (state) => state.settings
-    }),
+    ...mapGetters(['sidebar']),
     routes() {
-      return this.$router.options.routes;
+      const routes = this.$router.options.routes.filter(item => {
+        return item.hidden != true;
+      });
+      return routes;
     },
     activeMenu() {
       const route = this.$route;
@@ -84,79 +55,8 @@ export default {
       return variables;
     },
     isCollapse() {
-      return false;
-    }
-  },
-  created() {
-    this.fetchAppList();
-  },
-  methods: {
-    fetchAppList() {
-      return apiApp.fetchList().then((resp) => {
-        this.appList = resp.data.body;
-      });
-    },
-    transformToRoutes(appList) {
-      const routes = appList.map((e) => {
-        return {
-          path: `/app/${e.id}`,
-          component: Layout,
-          children: [
-            {
-              path: `/app/${e.id}`,
-              name: e.name,
-              component: () => import('@/views/app/index'),
-              meta: {title: e.name, icon: e.icon, app: true, platform: e.platform}
-            }
-          ]
-        };
-      });
-      return routes;
-    },
-    beforeUpload(file) {
-      const isApp = file.name.endsWith('.ipa') || file.name.endsWith('.apk');
-      if (!isApp) {
-        this.$message({
-          message: '请上传ipa或apk！',
-          type: 'error'
-        });
-      }
-      return isApp;
-    },
-    myUpload(file) {
-      let fd = new FormData();
-      fd.append('file', file.file);
-      request({
-        url: '/app/upload',
-        method: 'post',
-        headers: {'Content-Type': 'multipart/form-data'},
-        data: fd
-      }).then((resp) => {
-        const data = resp.data;
-        if (data.code == 200) {
-          this.appInfo = data.body;
-          this.showUpdate = true;
-        }
-      });
-    },
-    onAppFinish(isNew) {
-      if (isNew) {
-        this.fetchAppList();
-      } else {
-        this.$EventBus.$emit('app-upgrade');
-      }
-      this.showUpdate = false;
+      return !this.sidebar.opened;
     }
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.myupload {
-  padding: 10px 0px 0px 20px;
-
-  ::v-deep .el-upload-list__item {
-    visibility: hidden;
-  }
-}
-</style>
