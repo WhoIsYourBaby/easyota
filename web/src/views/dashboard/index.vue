@@ -1,18 +1,26 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ user.nickname }}</div>
-  </div>
+  <div class="dashboard-container"></div>
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex';
+import {mapState} from 'vuex';
+import AppCard from './components/AppCard.vue';
 
 export default {
   name: 'Dashboard',
+  components: {AppCard},
+  data() {
+    return {
+      appList: []
+    };
+  },
   computed: {
     ...mapState({
-      user: (state) => state.user
+      user: state => state.user
     })
+  },
+  created() {
+    console.log('asdasd');
   }
 };
 </script>
