@@ -54,7 +54,7 @@
         </div>
       </el-dialog>
     </div>
-    <div v-else>i am normal</div>
+    <div v-else>你没有权限访问超级管理员功能</div>
   </div>
 </template>
 

@@ -48,7 +48,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <div v-else>i am normal</div>
+    <div v-else>你没有权限访问配置页面</div>
   </div>
 </template>
 
