@@ -20,7 +20,7 @@ export default {
     })
   },
   created() {
-    console.log('asdasd');
+    this.$store.dispatch('app/fetchList');
   }
 };
 </script>
