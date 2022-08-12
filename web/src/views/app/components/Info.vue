@@ -58,13 +58,11 @@ export default {
   },
   data() {
     return {
-      rootUrl: '',
       upgradeAppInfo: {}, //上传新版本后返回的数据
       showUpdate: false
     };
   },
   mounted() {
-    this.rootUrl = process.env.VUE_APP_BASE_URL;
   },
   methods: {
     onAppFinish() {

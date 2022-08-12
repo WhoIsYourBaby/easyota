@@ -62,16 +62,7 @@ export default {
   data() {
     return {
       vinfo: this.data,
-      rootUrl: ''
     };
-  },
-  // computed: {
-  //   rootUrl: () => {
-  //     return process.env.VUE_APP_BASE_URL;
-  //   }
-  // },
-  mounted() {
-    this.rootUrl = process.env.VUE_APP_BASE_URL;
   },
   methods: {
     onCancel() {
