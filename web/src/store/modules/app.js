@@ -1,19 +1,26 @@
-import appApi from "@/api/app";
+import appApi from '@/api/app';
 
 const state = {
-  list: [],
-}
+  list: []
+};
+
+const mutations = {
+  SET_LIST: (state, list) => {
+    state.list = list;
+  }
+};
 
 const actions = {
   fetchList({commit}) {
-    return appApi.fetchList().then(res => {
-      console.log(res);
+    return appApi.fetchList().then((res) => {
+      commit('SET_LIST', res.data.body);
     });
   }
-}
+};
 
 export default {
   namespaced: true,
   state,
-  actions
-}
+  actions,
+  mutations
+};

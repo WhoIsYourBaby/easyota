@@ -1,5 +1,9 @@
 <template>
-  <div class="dashboard-container"></div>
+  <div class="dashboard-container">
+    <div v-for="item in appList">
+      <div>{{ item }}</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -11,12 +15,14 @@ export default {
   components: {AppCard},
   data() {
     return {
-      appList: []
     };
   },
   computed: {
     ...mapState({
-      user: state => state.user
+      user: (state) => state.user,
+      appList: (state) => {
+        return state.app.list;
+      }
     })
   },
   created() {
