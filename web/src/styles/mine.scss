@@ -108,6 +108,7 @@ $red: #e63d3d;
 .app-card {
   width: 400px;
   margin: 20px;
+  position: relative;
 
   .text-row {
     margin: 6px 0px;
@@ -119,6 +120,20 @@ $red: #e63d3d;
     .content {
       width: 65%;
       display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
+  }
+  .text-desc {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .delete-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
   }
 }

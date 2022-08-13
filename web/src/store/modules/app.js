@@ -15,6 +15,9 @@ const actions = {
     return appApi.fetchList().then((res) => {
       commit('SET_LIST', res.data.body);
     });
+  },
+  deleteApp({commit}, appId) {
+    return appApi.delete(appId);
   }
 };
 

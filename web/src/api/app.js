@@ -81,6 +81,15 @@ const app = {
       method: 'get',
       params: data
     });
+  },
+  delete(appId) {
+    return request({
+      url: '/app/delete',
+      method: 'post',
+      data: {
+        appId: appId
+      }
+    });
   }
 };
 

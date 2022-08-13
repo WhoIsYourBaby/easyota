@@ -19,7 +19,13 @@
             <div class="title">{{ item.platform == 'ios' ? 'BundleID:' : 'PackageName:' }}</div>
             <div class="content">{{ item.bundleId }}</div>
           </div>
-          <div class="text-row">{{ item.adesc }}</div>
+          <div class="text-desc">{{ item.adesc }}</div>
+          <el-button
+            @click.stop="onDeleteClick(item)"
+            icon="el-icon-delete"
+            circle
+            class="delete-button"
+          ></el-button>
         </el-card>
       </div>
     </div>
@@ -50,6 +56,10 @@ export default {
       this.$router.push({
         path: `/app/${appId}`
       });
+    },
+    async onDeleteClick(item) {
+      await this.$store.dispatch('app/deleteApp', item.id);
+      await this.$store.dispatch('app/fetchList');
     }
   }
 };

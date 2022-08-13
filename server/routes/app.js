@@ -312,6 +312,16 @@ router.post('/delete', async (ctx, next) => {
           appId,
           ctx.state.user.id
         ]);
+  // 删除版本信息
+  ctx.state.user.type === 'admin'
+    ? await dbhealper.makePromise(ctx.state.sqlconn, 'delete from app_version where app_id=?', [
+        appId
+      ])
+    : await dbhealper.makePromise(
+        ctx.state.sqlconn,
+        'delete from app_version where app_id=? and user_id=?',
+        [appId, ctx.state.user.id]
+      );
   ctx.body = {
     code: 200,
     msg: `${deleteResult.affectedRows}条数据被删除`
