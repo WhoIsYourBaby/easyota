@@ -14,7 +14,7 @@
         </el-upload>
       </div>
       <div class="attrs">
-        <subtitle>中电达康</subtitle>
+        <subtitle>{{ data.name }}</subtitle>
         <div>
           <el-link type="info" :href="data.shortUrl" target="_blank">
             {{ data.shortUrl }}
@@ -62,8 +62,7 @@ export default {
       showUpdate: false
     };
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     onAppFinish() {
       this.$EventBus.$emit('app-upgrade');
@@ -120,7 +119,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .info {

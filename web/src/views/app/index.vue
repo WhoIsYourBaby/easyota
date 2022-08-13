@@ -29,6 +29,7 @@ export default {
       const appId = this.$route.params.id;
       apiApp.fetchApp(appId).then((resp) => {
         this.appDetail = resp.data.body;
+        this.$route.meta.title = this.appDetail.name;
       });
     }
   }
