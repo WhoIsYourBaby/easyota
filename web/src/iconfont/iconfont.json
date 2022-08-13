@@ -1,0 +1,23 @@
+{
+  "id": "3586461",
+  "name": "easyota",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-ota-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1017253",
+      "name": "iOS",
+      "font_class": "ios",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "22894645",
+      "name": "android",
+      "font_class": "android",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    }
+  ]
+}

@@ -16,7 +16,6 @@ $red: #e63d3d;
   min-width: 774px;
 }
 
-
 //  字体大小-最大标题
 @mixin texth1 {
   font-size: 20px;
@@ -41,7 +40,6 @@ $red: #e63d3d;
   color: $fontSubText;
   font-weight: 400;
 }
-
 
 @mixin flexCenter {
   display: flex;
@@ -94,10 +92,33 @@ $red: #e63d3d;
   box-sizing: border-box;
 }
 
-
 // main-container global css
 .app-container {
   padding: 20px;
   border-radius: 4px;
   min-width: 774px;
+}
+
+.flex-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.app-card {
+  width: 400px;
+  margin: 20px;
+
+  .text-row {
+    margin: 6px 0px;
+    .title {
+      width: 35%;
+      display: inline-block;
+    }
+
+    .content {
+      width: 65%;
+      display: inline-block;
+    }
+  }
 }

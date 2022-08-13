@@ -1,7 +1,25 @@
 <template>
-  <div class="dashboard-container">
-    <div v-for="item in appList">
-      <div>{{ item }}</div>
+  <div class="app-container">
+    <div class="flex-grid">
+      <el-card v-for="item in appList" :key="item.id" class="app-card">
+        <img :src="item.icon" width="80" height="80" />
+        <div class="text-row">
+          <span
+            class="iconfont"
+            :class="item.platform == 'ios' ? 'icon-ota-ios' : 'icon-ota-android'"
+          ></span>
+          <span style="margin-left: 4px">{{ item.name }}</span>
+        </div>
+        <div class="text-row">
+          <div class="title">短连接:</div>
+          <div class="content">{{ item.shortUrl }}</div>
+        </div>
+        <div class="text-row">
+          <div class="title">{{ item.platform == 'ios' ? 'BundleID:' : 'PackageName:' }}</div>
+          <div class="content">{{ item.bundleId }}</div>
+        </div>
+        <div class="text-row">{{ item.adesc }}</div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -14,8 +32,7 @@ export default {
   name: 'Dashboard',
   components: {AppCard},
   data() {
-    return {
-    };
+    return {};
   },
   computed: {
     ...mapState({
@@ -30,15 +47,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
-}
-</style>
