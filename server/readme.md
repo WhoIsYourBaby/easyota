@@ -68,3 +68,12 @@
 - 生成二维码(iOS与安卓有不同的二维码生成依据机制)
 - app增删查改
 - app版本增删查改
+
+
+nginx反向代理转发域名和clientIp
+{
+# 其它部分
+                proxy_set_header  Host  $host;
+                proxy_set_header  X-real-ip $remote_addr;
+                proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+}
