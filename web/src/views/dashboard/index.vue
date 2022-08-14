@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="flex-grid">
       <div>
-        <el-card>
+        <el-card class="app-card">
           <el-upload :before-upload="beforeUpload" :http-request="myUpload" action="" drag>
             <i class="el-icon-upload" style="font-size: 66px"></i>
             <div class="el-upload__text">
