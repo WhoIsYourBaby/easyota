@@ -17,7 +17,12 @@
         <text-body style="margin: 10px 0px 30px 0px">
           Version{{ data.version }}+{{ data.build }}
         </text-body>
-        <el-input placeholder="短连接" v-model="vinfo.short" style="margin: 0px 0px 30px 0px">
+        <el-input
+          placeholder="短连接"
+          v-model="vinfo.short"
+          style="margin: 0px 0px 30px 0px"
+          :disabled="vinfo.isNew == false"
+        >
           <template slot="prepend">{{ vinfo.shortDomain }}/</template>
         </el-input>
         <el-input
@@ -52,7 +57,7 @@ export default {
   },
   data() {
     return {
-      vinfo: this.data,
+      vinfo: this.data
     };
   },
   methods: {
@@ -60,7 +65,8 @@ export default {
       this.$emit('on-finish');
     },
     onSure() {
-      const name = (typeof this.vinfo.name) == 'string' ? this.vinfo.name : this.vinfo.name.toString();
+      const name =
+        typeof this.vinfo.name == 'string' ? this.vinfo.name : this.vinfo.name.toString();
       if (this.vinfo.isNew) {
         const data = {
           name: name,
@@ -107,7 +113,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .app-update {
