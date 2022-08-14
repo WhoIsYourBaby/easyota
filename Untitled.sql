@@ -80,9 +80,7 @@ CREATE TABLE `upload` (
   `path` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `size` int(11) unsigned DEFAULT '0' COMMENT '约等于4G',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `url_UNIQUE` (`url`),
-  UNIQUE KEY `path_UNIQUE` (`path`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
