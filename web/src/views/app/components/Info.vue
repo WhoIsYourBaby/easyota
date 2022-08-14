@@ -47,7 +47,7 @@
 import VueQr from 'vue-qr';
 import {formatPlatform, formatDate} from '@/utils/validate';
 import request from '@/utils/request';
-import AppUpdate from './AppUpdate';
+import AppUpdate from '@/components/AppUpdate';
 export default {
   components: {VueQr, AppUpdate},
   props: {
