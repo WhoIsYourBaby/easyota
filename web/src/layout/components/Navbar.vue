@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch('device/toggleSideBar')
     },
     async logout() {
       await this.$store.dispatch('user/logout')
