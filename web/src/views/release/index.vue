@@ -17,7 +17,7 @@ export default {
   components: {DesktopDefault, MobileDefault},
   computed: {
     isMobile() {
-      return this.$store.state.settings.device == 'mobile';
+      return this.$store.state.device.device == 'mobile';
     }
   },
   watch: {

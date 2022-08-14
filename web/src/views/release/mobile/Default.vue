@@ -15,6 +15,11 @@
     <text-label style="margin-top: 10px">
       更新时间：{{ formatDate(this.data.version.createTime) }}
     </text-label>
+    <el-button-group style="margin-top: 10px">
+      <el-button type="primary" size="mini" @click="onInstallClick">下载APK</el-button>
+      <el-button type="primary" size="mini" @click="onGooglePlayClick">Google Play</el-button>
+      <el-button type="primary" size="mini" @click="onAppleStoreClick">Apple Store</el-button>
+    </el-button-group>
     <el-button @click="onInstallClick" type="primary" round style="margin-top: 25px">
       下载安装
     </el-button>
@@ -50,6 +55,12 @@ export default {
       } else {
         window.open(this.data.version.binUrl);
       }
+    },
+    onGooglePlayClick() {
+      window.open(this.data.googleplay);
+    },
+    onAppleStoreClick() {
+      window.open(this.data.applestore);
     },
     formatDate(value) {
       return formatDate('yyyy-MM-dd hh:mm', value);
