@@ -20,9 +20,6 @@
       <el-button type="primary" size="mini" @click="onGooglePlayClick">Google Play</el-button>
       <el-button type="primary" size="mini" @click="onAppleStoreClick">Apple Store</el-button>
     </el-button-group>
-    <el-button @click="onInstallClick" type="primary" round style="margin-top: 25px">
-      下载安装
-    </el-button>
     <div style="width: 90%; max-width: 500px">
       <el-divider></el-divider>
       <main-title>更新说明</main-title>
