@@ -69,9 +69,10 @@ export default {
       this.$emit('on-finish');
     },
     onSure() {
+      const name = (typeof this.vinfo.name) == 'string' ? this.vinfo.name : this.vinfo.name.toString();
       if (this.vinfo.isNew) {
         const data = {
-          name: this.vinfo.name,
+          name: name,
           short: this.vinfo.short,
           appDesc: this.vinfo.adesc,
           vdesc: this.vinfo.vdesc,
@@ -82,7 +83,7 @@ export default {
         apiApp.create(data).then(this.onResponse);
       } else {
         const data = {
-          appId: this.vinfo.appId,
+          appId: name,
           uploadId: this.vinfo.uploadId,
           name: this.vinfo.name,
           short: this.vinfo.short,

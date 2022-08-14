@@ -109,11 +109,7 @@ export default {
       });
     },
     onAppFinish(isNew) {
-      if (isNew) {
-        this.$store.dispatch('app/fetchList');
-      } else {
-        this.$EventBus.$emit('app-upgrade');
-      }
+      this.$store.dispatch('app/fetchList');
       this.showUpdate = false;
     }
   }

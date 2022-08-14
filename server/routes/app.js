@@ -629,7 +629,7 @@ async function createApp(conn, user, appInfo) {
   const verUuid = UUID.v1().replace(/-/g, '');
   const verInsert = await dbhealper.makePromise(
     conn,
-    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, manifest, icon, user_id, size, manifest) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    'insert into app_version (uuid, app_id, version, build, vdesc, branch, bin_url, manifest, icon, user_id, size) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
     [
       verUuid,
       appId,
@@ -641,8 +641,7 @@ async function createApp(conn, user, appInfo) {
       appInfo.manifest,
       appInfo.iconUrl,
       user.id,
-      appInfo.size,
-      appInfo.manifest
+      appInfo.size
     ]
   );
 }
