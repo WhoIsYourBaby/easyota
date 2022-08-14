@@ -83,9 +83,9 @@ export default {
         apiApp.create(data).then(this.onResponse);
       } else {
         const data = {
-          appId: name,
+          appId: this.vinfo.appId,
           uploadId: this.vinfo.uploadId,
-          name: this.vinfo.name,
+          name: name,
           short: this.vinfo.short,
           vdesc: this.vinfo.vdesc,
           icon: this.vinfo.icon,
