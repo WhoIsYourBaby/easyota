@@ -158,7 +158,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortDomain: webDomain
+      shortDomain: webDomain,
+      size
     };
   } else {
     appBody = {
@@ -173,7 +174,8 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       uploadId: insertApp.insertId,
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
-      shortDomain: webDomain
+      shortDomain: webDomain,
+      size,
     };
   }
   ctx.body = {
@@ -639,7 +641,7 @@ async function createApp(conn, user, appInfo) {
       appInfo.manifest,
       appInfo.iconUrl,
       user.id,
-      size.size,
+      appInfo.size,
       appInfo.manifest
     ]
   );
