@@ -3,7 +3,7 @@
     <div class="flex-grid">
       <div>
         <el-card class="app-card">
-          <el-upload :before-upload="beforeUpload" :http-request="myUpload" action="" drag>
+          <el-upload :before-upload="beforeUpload" :http-request="myUpload" action="" drag :show-file-list="false">
             <i class="el-icon-upload" style="font-size: 66px"></i>
             <div class="el-upload__text">
               <em>点击上传ipa/apk，不超过200M</em>
