@@ -11,15 +11,6 @@
     @open="onOpen"
   >
     <div class="version-update-info">
-      <el-radio-group
-        v-model="vinfo.branch"
-        border
-        style="margin-bottom: 30px; display: inline-block"
-      >
-        <el-radio-button label="alpha"></el-radio-button>
-        <el-radio-button label="beta"></el-radio-button>
-        <el-radio-button label="rc"></el-radio-button>
-      </el-radio-group>
       <el-input
         type="textarea"
         :rows="4"

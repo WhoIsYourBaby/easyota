@@ -27,13 +27,6 @@
             <p>
               <text-body>{{ item.vdesc }}</text-body>
             </p>
-            <div style="margin-bottom: 16px">
-              <el-radio-group v-model="item.branch" size="small" @change="onVersionChanged(item)">
-                <el-radio-button label="alpha"></el-radio-button>
-                <el-radio-button label="beta"></el-radio-button>
-                <el-radio-button label="rc"></el-radio-button>
-              </el-radio-group>
-            </div>
             <el-button-group>
               <el-button
                 @click="onEditClick(item)"

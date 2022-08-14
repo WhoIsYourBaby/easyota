@@ -20,15 +20,6 @@
         <el-input placeholder="短连接" v-model="vinfo.short" style="margin: 0px 0px 30px 0px">
           <template slot="prepend">{{ vinfo.shortDomain }}/</template>
         </el-input>
-        <el-radio-group
-          v-model="vinfo.branch"
-          border
-          style="margin-bottom: 30px; display: inline-block"
-        >
-          <el-radio-button label="alpha"></el-radio-button>
-          <el-radio-button label="beta"></el-radio-button>
-          <el-radio-button label="rc"></el-radio-button>
-        </el-radio-group>
         <el-input
           type="textarea"
           :rows="4"
