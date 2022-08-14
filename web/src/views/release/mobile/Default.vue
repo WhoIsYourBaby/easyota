@@ -54,10 +54,12 @@ export default {
       }
     },
     onGooglePlayClick() {
-      window.open(this.data.googleplay);
+      // window.open(this.data.googleplay);
+      window.open('https://play.google.com/store/apps/details?id=com.kimoji.flutter.hyglight');
     },
     onAppleStoreClick() {
-      window.open(this.data.applestore);
+      // window.open(this.data.applestore);
+      window.open('https://apps.apple.com/us/app/hyglight/id1619097490');
     },
     formatDate(value) {
       return formatDate('yyyy-MM-dd hh:mm', value);

@@ -15,6 +15,11 @@
     <text-label style="margin-top: 10px">
       更新时间：{{ formatDate(this.data.version.createTime) }}
     </text-label>
+    <el-button-group style="margin-top: 10px">
+      <el-button type="primary" size="mini" @click="onInstallClick">下载APK</el-button>
+      <el-button type="primary" size="mini" @click="onGooglePlayClick">Google Play</el-button>
+      <el-button type="primary" size="mini" @click="onAppleStoreClick">Apple Store</el-button>
+    </el-button-group>
     <vue-qr
       style="margin-top: 20px"
       class="bicode"
@@ -68,6 +73,23 @@ export default {
   methods: {
     formatDate(value) {
       return formatDate('yyyy-MM-dd hh:mm', value);
+    },
+    onInstallClick() {
+      if (this.data.platform == 'ios') {
+        const manifest = this.data.version.manifest;
+        const otaurl = `itms-services://?action=download-manifest&url=${manifest}`;
+        window.open(otaurl);
+      } else {
+        window.open(this.data.version.binUrl);
+      }
+    },
+    onGooglePlayClick() {
+      // window.open(this.data.googleplay);
+      window.open('https://play.google.com/store/apps/details?id=com.kimoji.flutter.hyglight');
+    },
+    onAppleStoreClick() {
+      // window.open(this.data.applestore);
+      window.open('https://apps.apple.com/us/app/hyglight/id1619097490');
     }
   }
 };
