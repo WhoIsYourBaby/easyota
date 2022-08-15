@@ -22,14 +22,14 @@
             <span style="margin-left: 4px">{{ item.name }}</span>
           </div>
           <div class="text-row">
-            <div class="title">短连接:</div>
-            <div class="content">{{ item.shortUrl }}</div>
+            <text-body class="title">短连接:</text-body>
+            <text-body class="content">{{ item.shortUrl }}</text-body>
           </div>
           <div class="text-row">
-            <div class="title">{{ item.platform == 'ios' ? 'BundleID:' : 'PackageName:' }}</div>
-            <div class="content">{{ item.bundleId }}</div>
+            <text-body class="title">{{ item.platform == 'ios' ? 'BundleID:' : 'PackageName:' }}</text-body>
+            <text-body class="content">{{ item.bundleId }}</text-body>
           </div>
-          <div class="text-desc">{{ item.adesc }}</div>
+          <text-body class="text-desc">{{ item.adesc }}</text-body>
           <el-button
             @click.stop="onDeleteClick(item)"
             icon="el-icon-delete"
