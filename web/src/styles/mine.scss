@@ -33,6 +33,7 @@ $red: #e63d3d;
   font-size: 14px;
   color: $fontText;
   font-weight: 400;
+  white-space: pre-wrap;
 }
 // 辅助说明字体大小
 @mixin textminip {
