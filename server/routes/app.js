@@ -37,12 +37,20 @@ router.get('/', async (ctx, next) => {
   const appId = parseInt(qbody.appId);
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore from app where id=? and user_id=?',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore, previews from app where id=? and user_id=?',
     [appId, ctx.state.user.id]
   );
   const body = appInDb.length > 0 ? appInDb[0] : null;
   if (body) {
     body.shortUrl = appendHostToShort(ctx, body.short);
+    // 组装previews
+    const pids = (body.previews || '').split(',');
+    const previewUrls = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      'select url, id, type from upload where id in (?)',
+      [pids]
+    );
+    body.previews = previewUrls;
   }
   ctx.body = {
     code: 200,
@@ -288,6 +296,7 @@ router.post('/create', async (ctx, next) => {
  * appId
  * applestore
  * androidstore
+ * previews
  */
 router.post('/update', async (ctx, next) => {
   const qbody = ctx.request.body;
@@ -306,7 +315,15 @@ router.post('/update', async (ctx, next) => {
   await dbhealper.makePromise(
     ctx.state.sqlconn,
     'update app set name=?, adesc=?, short=?, applestore=?, androidstore=? where id=? and user_id=?',
-    [qbody.name, qbody.adesc, qbody.short, qbody.applestore, qbody.androidstore, qbody.id, ctx.state.user.id]
+    [
+      qbody.name,
+      qbody.adesc,
+      qbody.short,
+      qbody.applestore,
+      qbody.androidstore,
+      qbody.id,
+      ctx.state.user.id
+    ]
   );
   appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
