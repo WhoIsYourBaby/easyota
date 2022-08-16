@@ -17,7 +17,7 @@
     </text-label>
     <el-button-group style="margin-top: 10px">
       <el-button type="primary" size="mini" @click="onInstallClick">下载APK</el-button>
-      <el-button type="primary" size="mini" @click="onGooglePlayClick">Google Play</el-button>
+      <el-button type="primary" size="mini" @click="onGooglePlayClick">Android Store</el-button>
       <el-button type="primary" size="mini" @click="onAppleStoreClick">Apple Store</el-button>
     </el-button-group>
     <vue-qr
