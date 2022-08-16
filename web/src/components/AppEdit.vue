@@ -1,5 +1,6 @@
 <template>
   <el-dialog
+    @opened="onOpen"
     :title="data.name"
     :visible="visible"
     width="500px"
@@ -52,11 +53,11 @@
             </div>
           </el-upload>
           <div v-for="item in appInfo.previews" class="upload-image image-size">
-            <el-image
-              :src="item.url"
-              fit="cover"
-              class="image-size"
-            ></el-image>
+            <el-image :src="item.url" fit="cover" class="image-size"></el-image>
+            <i
+              class="delete-icon el-icon-circle-close"
+              @click="onDeletePreview(item)"
+            ></i>
           </div>
         </div>
       </el-form-item>
@@ -84,12 +85,16 @@ export default {
       loadingText: ''
     };
   },
-  watch: {
-    data(val) {
-      this.appInfo = JSON.parse(JSON.stringify(val));
-    }
-  },
   methods: {
+    onOpen() {
+      this.appInfo = JSON.parse(JSON.stringify(this.data));
+    },
+    onDeletePreview(item) {
+      const index = this.appInfo.previews.findIndex((ele) => {
+        return ele.id == item.id;
+      });
+      this.appInfo.previews.splice(index, 1);
+    },
     onSaveClick() {
       appApi.update(this.appInfo).then((res) => {
         this.appInfo = res.data.body;
@@ -158,6 +163,15 @@ export default {
   border-radius: 6px;
   box-sizing: border-box;
   margin-right: 12px;
+  position: relative;
+
+  .delete-icon {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    font-size: 18px;
+    color: orangered;
+  }
 }
 .upload-border {
   border: 1px dashed #c0ccda;
