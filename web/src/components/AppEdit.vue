@@ -41,7 +41,7 @@
             v-loading="loading"
             :element-loading-text="loadingText"
           >
-            <div class="upload-image">
+            <div class="upload-image upload-border image-size">
               <i
                 class="el-icon-upload"
                 style="font-size: 48px; margin-top: 60px"
@@ -51,6 +51,13 @@
               </div>
             </div>
           </el-upload>
+          <div v-for="item in appInfo.previews" class="upload-image image-size">
+            <el-image
+              :src="item.url"
+              fit="cover"
+              class="image-size"
+            ></el-image>
+          </div>
         </div>
       </el-form-item>
     </el-form>
@@ -63,7 +70,7 @@
 
 <script>
 import appApi from '@/api/app';
-import request from "@/utils/request.js";
+import request from '@/utils/request.js';
 export default {
   name: 'AppEdit',
   props: {
@@ -138,17 +145,24 @@ export default {
 .pic-layout {
   @include flexStart;
   width: 100%;
-  overflow-x: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .upload-image {
   background-color: #fbfdff;
-  border: 1px dashed #c0ccda;
   border-radius: 6px;
   box-sizing: border-box;
+  margin-right: 12px;
+}
+.upload-border {
+  border: 1px dashed #c0ccda;
+}
+
+.image-size {
   width: 150px;
   min-width: 150px;
   height: 250px;
-  margin-right: 12px;
+  max-height: 250px;
 }
 </style>
