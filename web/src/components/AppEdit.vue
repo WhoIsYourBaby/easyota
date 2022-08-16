@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import request from "@/utils/request.js";
+import appApi from '@/api/app';
 export default {
   name: 'AppEdit',
   props: {
@@ -76,11 +76,19 @@ export default {
       loadingText: ''
     };
   },
+  watch: {
+    data(val) {
+      this.appInfo = val;
+    }
+  },
   methods: {
     onSaveClick() {
       this.$emit('update:visible');
+      appApi.update(this.appInfo);
     },
-    onCancel() {},
+    onCancel() {
+      this.$emit('update:visible');
+    },
     beforeUpload(file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 10;

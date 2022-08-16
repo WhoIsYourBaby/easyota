@@ -37,7 +37,7 @@ router.get('/', async (ctx, next) => {
   const appId = qbody.appId;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where id=? and user_id=?',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId， applestore, androidstore from app where id=? and user_id=?',
     [appId, ctx.state.user.id]
   );
   const body = appInDb.length > 0 ? appInDb[0] : null;
@@ -60,10 +60,10 @@ router.get('/list', async (ctx, next) => {
   let query;
   if (user.type === 'admin') {
     query =
-      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app;';
+      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore from app;';
   } else {
     query =
-      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId from app where user_id=?';
+      'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore from app where user_id=?';
   }
   const apps = await dbhealper.makePromise(ctx.state.sqlconn, query, [user.id]);
   apps.forEach((item) => {
@@ -284,13 +284,15 @@ router.post('/create', async (ctx, next) => {
  * adesc
  * short
  * appId
+ * applestore
+ * androidstore
  */
 router.post('/update', async (ctx, next) => {
   const qbody = ctx.request.body;
   let appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
     'select id from app where id=? and user_id=?',
-    [qbody.appId, ctx.state.user.id]
+    [qbody.id, ctx.state.user.id]
   );
   if (appInDb.length === 0) {
     ctx.body = {
@@ -301,13 +303,13 @@ router.post('/update', async (ctx, next) => {
   }
   await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'update app set name=?, adesc=?, short=? where id=? and user_id=?',
-    [qbody.name, qbody.adesc, qbody.short, qbody.appId, ctx.state.user.id]
+    'update app set name=?, adesc=?, short=?, applestore=?, androidstore=? where id=? and user_id=?',
+    [qbody.name, qbody.adesc, qbody.short, qbody.applestore, qbody.androidstore, qbody.id, ctx.state.user.id]
   );
   appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId from app where id=? and user_id=?;',
-    [qbody.appId, ctx.state.user.id]
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, androidstore, applestore from app where id=? and user_id=?;',
+    [qbody.id, ctx.state.user.id]
   );
   const body = appInDb[0];
   body.shortUrl = appendHostToShort(ctx, body.short);
