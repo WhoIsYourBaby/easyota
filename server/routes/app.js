@@ -312,26 +312,35 @@ router.post('/update', async (ctx, next) => {
     };
     return;
   }
+  const previews = qbody.previews.map((item) => item.id).join(',');
   await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'update app set name=?, adesc=?, short=?, applestore=?, androidstore=? where id=? and user_id=?',
+    'update app set name=?, adesc=?, short=?, applestore=?, androidstore=?, previews=? where id=? and user_id=?',
     [
       qbody.name,
       qbody.adesc,
       qbody.short,
       qbody.applestore,
       qbody.androidstore,
+      previews,
       qbody.id,
       ctx.state.user.id
     ]
   );
   appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, androidstore, applestore from app where id=? and user_id=?;',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, androidstore, applestore, previews from app where id=? and user_id=?;',
     [qbody.id, ctx.state.user.id]
   );
   const body = appInDb[0];
   body.shortUrl = appendHostToShort(ctx, body.short);
+  const pids = (body.previews || '').split(',');
+    const previewUrls = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      'select url, id, type from upload where id in (?)',
+      [pids]
+    );
+    body.previews = previewUrls;
   ctx.body = {
     code: 200,
     msg: 'ok',

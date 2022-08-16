@@ -131,6 +131,10 @@ export default {
           const data = resp.data;
           if (data.code == 200) {
             const result = data.body;
+            if (this.appInfo.previews == null) {
+              this.appInfo.previews = [];
+            }
+            this.appInfo.previews.push(result);
           }
         })
         .finally(() => {
