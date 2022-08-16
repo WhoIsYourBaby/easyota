@@ -2,11 +2,11 @@
   <el-card shadow="hover">
     <div class="info">
       <div class="appaction">
-        <el-image style="width: 120px; height: 120px" :src="data.icon" fit="fill"></el-image>
-        <el-upload :before-upload="beforeUpload" :show-file-list="false" :http-request="myUpload" action=""
-          style="margin-top: 10px" v-loading="loading" :element-loading-text="loadingText">
-          <el-button size="medium" type="primary">更新版本</el-button>
-        </el-upload>
+        <el-image
+          style="width: 168px; height: 168px"
+          :src="data.icon"
+          fit="fill"
+        ></el-image>
       </div>
       <div class="attrs">
         <subtitle>{{ data.name }}</subtitle>
@@ -17,28 +17,54 @@
         </div>
         <text-body>{{ data.bundleId }}</text-body>
         <text-body>{{ platform(data.platform) }}</text-body>
-        <text-body>{{ dateStr(data.createTime) }}</text-body>
+        <div class="tow-buttons">
+          <el-upload
+            :before-upload="beforeUpload"
+            :show-file-list="false"
+            :http-request="myUpload"
+            action=""
+            v-loading="loading"
+            :element-loading-text="loadingText"
+            style="margin-right: 12px"
+          >
+            <el-button size="mini" type="primary">更新</el-button>
+          </el-upload>
+          <el-button size="mini" type="primary" @click="onAppEditClick">
+            编辑
+          </el-button>
+        </div>
       </div>
-      <vue-qr class="bicode" :text="data.shortUrl || ''" :size="168" :logoSrc="data.icon" :margin="8"></vue-qr>
+      <vue-qr
+        class="bicode"
+        :text="data.shortUrl || ''"
+        :size="168"
+        :margin="8"
+      ></vue-qr>
     </div>
     <div class="appdesc">
       <text-body>{{ data.adesc }}</text-body>
     </div>
-    <app-update :data="upgradeAppInfo" :visible="this.showUpdate" @on-finish="onAppFinish"></app-update>
+    <app-update
+      :data="upgradeAppInfo"
+      :visible="this.showUpdate"
+      @on-finish="onAppFinish"
+    ></app-update>
+    <app-edit :data="data" :visible.sync="showEdit"></app-edit>
   </el-card>
 </template>
 
 <script>
 import VueQr from 'vue-qr';
-import { formatPlatform, formatDate } from '@/utils/validate';
+import {formatPlatform, formatDate} from '@/utils/validate';
 import request from '@/utils/request';
 import AppUpdate from '@/components/AppUpdate';
+import AppEdit from '@/components/AppEdit';
 export default {
-  components: { VueQr, AppUpdate },
+  components: {VueQr, AppUpdate, AppEdit},
   props: {
     data: {
       type: Object,
-      default: {},
+      default: {}
     }
   },
   data() {
@@ -46,11 +72,15 @@ export default {
       upgradeAppInfo: {}, //上传新版本后返回的数据
       showUpdate: false,
       loading: false,
-      loadingText: ''
+      loadingText: '',
+      showEdit: false
     };
   },
-  mounted() { },
+  mounted() {},
   methods: {
+    onAppEditClick() {
+      this.showEdit = true;
+    },
     onAppFinish() {
       this.$EventBus.$emit('app-upgrade');
       this.showUpdate = false;
@@ -84,29 +114,31 @@ export default {
       request({
         url: '/app/upload',
         method: 'post',
-        headers: { 'Content-Type': 'multipart/form-data' },
+        headers: {'Content-Type': 'multipart/form-data'},
         data: fd,
         onUploadProgress: (event) => {
-          const percent = event.loaded / event.total * 100;
+          const percent = (event.loaded / event.total) * 100;
           const loadingText = `${parseInt(percent)}% 上传中...`;
           this.loadingText = loadingText;
         }
-      }).then((resp) => {
-        const data = resp.data;
-        if (data.code == 200) {
-          if (data.body.bundleId != this.data.bundleId) {
-            this.$message({
-              message: '上传的版本不属于本App',
-              type: 'error'
-            });
-          } else {
-            this.upgradeAppInfo = data.body;
-            this.showUpdate = true;
+      })
+        .then((resp) => {
+          const data = resp.data;
+          if (data.code == 200) {
+            if (data.body.bundleId != this.data.bundleId) {
+              this.$message({
+                message: '上传的版本不属于本App',
+                type: 'error'
+              });
+            } else {
+              this.upgradeAppInfo = data.body;
+              this.showUpdate = true;
+            }
           }
-        }
-      }).finally(() => {
-        this.loading = false;
-      });
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     }
   }
 };
@@ -125,6 +157,10 @@ export default {
     min-height: 120px;
     margin-left: 10px;
     flex-grow: 1;
+
+    .tow-buttons {
+      @include flexStart;
+    }
   }
 
   .appaction {

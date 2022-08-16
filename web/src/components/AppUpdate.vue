@@ -11,7 +11,11 @@
     @open="onOpen"
   >
     <div class="app-update-info">
-      <el-image style="width: 100px; height: 100px" :src="data.icon" fit="fill"></el-image>
+      <el-image
+        style="width: 100px; height: 100px"
+        :src="data.icon"
+        fit="fill"
+      ></el-image>
       <div class="app-update-info-name">
         <el-input v-model="vinfo.name"></el-input>
         <text-body style="margin: 10px 0px 30px 0px">
@@ -66,7 +70,9 @@ export default {
     },
     onSure() {
       const name =
-        typeof this.vinfo.name == 'string' ? this.vinfo.name : this.vinfo.name.toString();
+        typeof this.vinfo.name == 'string'
+          ? this.vinfo.name
+          : this.vinfo.name.toString();
       if (this.vinfo.isNew) {
         const data = {
           name: name,
@@ -119,6 +125,7 @@ export default {
   &-info {
     @include flexStart;
     align-items: flex-start;
+
     &-name {
       margin-left: 10px;
       margin-top: 10px;
@@ -127,6 +134,7 @@ export default {
       align-items: flex-start;
     }
   }
+
   &-footer {
     margin-right: 60px;
   }

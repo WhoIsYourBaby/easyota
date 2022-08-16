@@ -85,6 +85,29 @@ router.get('/list', async (ctx, next) => {
  * 5、完成app+版本的入库
  */
 router.post('/upload', upload.single('file'), async (ctx, next) => {
+  // 1、处理上传的为图片逻辑
+  const isPic = ctx.file.filename.endsWith('.png') || ctx.file.filename.endsWith('.jpg');
+  const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
+  const webDomain = ctx.request.protocol + '://' + ctx.state.config.web_host;
+  const appPath = ctx.file.path;
+  const appUrl = domain + '/upload/' + ctx.file.filename;
+  const size = ctx.file.size;
+  if (isPic) {
+    const result = await dbhealper.makePromise(
+      ctx.state.sqlconn,
+      'insert into upload (url, path, user_id, size) values (?, ?, ?, ?)',
+      [appUrl, appPath, ctx.state.user.id, size]
+    );
+    ctx.body = {
+      code: 200,
+      body: {
+        url: appUrl,
+        id: result.insertId
+      }
+    };
+    return;
+  }
+  // 2、处理上传的apk或ipa逻辑
   let platform = 'unknown';
   if (ctx.file.filename.match('(.apk$)')) {
     platform = 'android'; //android
@@ -95,19 +118,14 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   if (platform === 'unknown') {
     ctx.body = {
       code: 604,
-      msg: '请上传ipa或者apk安装包'
+      msg: '请上传正确的文件格式'
     };
     return;
   }
-  const domain = ctx.request.protocol + '://' + ctx.state.config.api_host;
-  const webDomain = ctx.request.protocol + '://' + ctx.state.config.web_host;
-  const appPath = ctx.file.path;
   const parser = new AppInfoParser(appPath);
   const appinfo = await parser.parse();
   const iconPath = saveIcon(appinfo.icon);
   const iconUrl = domain + iconPath;
-  const appUrl = domain + '/upload/' + ctx.file.filename;
-  const size = ctx.file.size;
   //插入上传的app到upload表
   const insertApp = await dbhealper.makePromise(
     ctx.state.sqlconn,
@@ -175,7 +193,7 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
       branch: 'alpha',
       short: appInDb.length === 0 ? null : appInDb[0].short,
       shortDomain: webDomain,
-      size,
+      size
     };
   }
   ctx.body = {
