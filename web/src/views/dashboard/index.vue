@@ -37,12 +37,11 @@
 
 <script>
 import { mapState } from 'vuex';
-import AppCard from './components/AppCard.vue';
 import request from '@/utils/request';
 import AppUpdate from '@/components/AppUpdate.vue';
 export default {
   name: 'Dashboard',
-  components: { AppCard, AppUpdate },
+  components: { AppUpdate },
   data() {
     return {
       appInfo: {},
