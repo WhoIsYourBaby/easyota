@@ -591,7 +591,7 @@ router.get('/release', async (ctx, next) => {
   const branch = qbody.branch;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, tmobile, tdesktop from app where short=?;',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, tmobile, tdesktop, applestore, androidstore, previews from app where short=?;',
     [short]
   );
   const app = appInDb.length > 0 ? appInDb[0] : null;
@@ -603,6 +603,14 @@ router.get('/release', async (ctx, next) => {
     return;
   }
   app.shortUrl = appendHostToShort(ctx, app.short);
+  // 组装previews
+  const pids = (app.previews || '').split(',');
+  const previewUrls = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select url, id, type from upload where id in (?)',
+    [pids]
+  );
+  app.previews = previewUrls;
   let version = undefined;
   if (verUuid) {
     //如果有指定版本，直接返回该版本
