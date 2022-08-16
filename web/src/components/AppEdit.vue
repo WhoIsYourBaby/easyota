@@ -71,20 +71,23 @@ export default {
   },
   data() {
     return {
-      appInfo: this.data,
+      appInfo: JSON.parse(JSON.stringify(this.data)),
       loading: false,
       loadingText: ''
     };
   },
   watch: {
     data(val) {
-      this.appInfo = val;
+      this.appInfo = JSON.parse(JSON.stringify(val));
     }
   },
   methods: {
     onSaveClick() {
-      this.$emit('update:visible');
-      appApi.update(this.appInfo);
+      appApi.update(this.appInfo).then((res) => {
+        this.appInfo = res.data.body;
+        this.$emit('update:data', this.appInfo);
+        this.$emit('update:visible', false);
+      });
     },
     onCancel() {
       this.$emit('update:visible');

@@ -34,10 +34,10 @@ router.prefix('/app');
  */
 router.get('/', async (ctx, next) => {
   const qbody = ctx.request.query;
-  const appId = qbody.appId;
+  const appId = parseInt(qbody.appId);
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId， applestore, androidstore from app where id=? and user_id=?',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore from app where id=? and user_id=?',
     [appId, ctx.state.user.id]
   );
   const body = appInDb.length > 0 ? appInDb[0] : null;

@@ -49,7 +49,7 @@
       :visible="this.showUpdate"
       @on-finish="onAppFinish"
     ></app-update>
-    <app-edit :data="data" :visible.sync="showEdit"></app-edit>
+    <app-edit :data.sync="data" :visible.sync="showEdit"></app-edit>
   </el-card>
 </template>
 
@@ -175,6 +175,6 @@ export default {
 }
 
 .appdesc {
-  margin: 10px 20px 0px 150px;
+  margin: 10px 20px 0px 200px;
 }
 </style>
