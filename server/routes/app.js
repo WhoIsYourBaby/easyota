@@ -92,17 +92,19 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   const appPath = ctx.file.path;
   const appUrl = domain + '/upload/' + ctx.file.filename;
   const size = ctx.file.size;
+  const filetype = ctx.file.mimetype;
   if (isPic) {
     const result = await dbhealper.makePromise(
       ctx.state.sqlconn,
-      'insert into upload (url, path, user_id, size) values (?, ?, ?, ?)',
-      [appUrl, appPath, ctx.state.user.id, size]
+      'insert into upload (url, path, user_id, size, type) values (?, ?, ?, ?, ?)',
+      [appUrl, appPath, ctx.state.user.id, size, filetype]
     );
     ctx.body = {
       code: 200,
       body: {
         url: appUrl,
-        id: result.insertId
+        id: result.insertId,
+        type: filetype
       }
     };
     return;
@@ -129,13 +131,13 @@ router.post('/upload', upload.single('file'), async (ctx, next) => {
   //插入上传的app到upload表
   const insertApp = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'insert into upload (url, path, user_id, size) values (?, ?, ?, ?)',
-    [appUrl, appPath, ctx.state.user.id, size]
+    'insert into upload (url, path, user_id, size, type) values (?, ?, ?, ?, ?)',
+    [appUrl, appPath, ctx.state.user.id, size, filetype]
   );
   await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'insert into upload (url, path, user_id) values (?, ?, ?)',
-    [iconUrl, iconPath, ctx.state.user.id]
+    'insert into upload (url, path, user_id, type) values (?, ?, ?, ?)',
+    [iconUrl, iconPath, ctx.state.user.id, 'image/png']
   );
   let appBody;
   const bundleId = platform === 'android' ? appinfo.package : appinfo.CFBundleIdentifier;

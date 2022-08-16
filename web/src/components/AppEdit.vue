@@ -63,6 +63,7 @@
 
 <script>
 import appApi from '@/api/app';
+import request from "@/utils/request.js";
 export default {
   name: 'AppEdit',
   props: {
