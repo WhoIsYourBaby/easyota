@@ -4,7 +4,7 @@
       <div class="app-info">
         <img :src="appData.icon" alt="appData.icon" class="icon-part" />
         <div class="text-part">
-          <div class="name">
+          <div class="name text-margin">
             <span
               class="iconfont"
               :class="
@@ -13,22 +13,28 @@
             ></span>
             {{ this.appData.name }}
           </div>
-          <div class="version">
+          <div class="version text-margin">
             版本：{{ (appData.version || {}).version }} (build
             {{ (appData.version || {}).build }})
           </div>
-          <div class="version">
+          <div class="version text-margin">
             更新于 {{ formatDate((appData.version || {}).createTime) }}
           </div>
           <el-button-group>
-            <el-button type="primary" size="mini" icon="el-icon-edit"></el-button>
-            <el-button type="primary" size="mini" icon="el-icon-share"></el-button>
-            <el-button type="primary" size="mini" icon="el-icon-delete"></el-button>
+            <el-button type="primary" size="mini">下载APK</el-button>
+            <el-button type="primary" size="mini">安卓商店</el-button>
+            <el-button type="primary" size="mini">苹果商店</el-button>
           </el-button-group>
         </div>
         <div class="flex-space"></div>
-        <div class="qr-part"></div>
+        <vue-qr
+          class="qr-part"
+          :text="qrUrl"
+          :logoSrc="appData.icon"
+          :margin="8"
+        ></vue-qr>
       </div>
+      <el-divider></el-divider>
     </div>
   </div>
 </template>
@@ -38,9 +44,16 @@
 import ResizeMixin from '@/layout/mixin/ResizeHandler';
 import apiApp from '@/api/app';
 import {formatDate} from '@/utils/validate';
+import VueQr from 'vue-qr';
 export default {
   mixins: [ResizeMixin],
+  components: {
+    VueQr
+  },
   computed: {
+    qrUrl() {
+      return window.location.href;
+    },
     isMobile() {
       return this.$store.state.device.device == 'mobile';
     }
@@ -86,23 +99,36 @@ export default {
   align-items: center;
   flex-direction: column;
   .size-box {
-    max-width: 1024px;
+    max-width: 1100px;
     width: 100%;
     min-height: 100px;
     // background-color: grey;
     .app-info {
-      @include flexStart;
+      @include flexCenter;
+      align-items: flex-start;
       flex-direction: row;
-      margin-top: 4%;
+      flex-wrap: wrap;
+      margin-top: 8%;
       padding: 2%;
       .icon-part {
         border-radius: 22%;
+        border: 1px solid lightgray;
         width: 30%;
         max-width: 220px;
         height: auto;
+        margin-bottom: 4%;
+      }
+      .qr-part {
+        width: 30%;
+        max-width: 220px;
+        aspect-ratio: 1;
       }
       .text-part {
-        height: 100%;
+        @include flexStart;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 3%;
+        padding-top: 2%;
         .iconfont {
           font-size: 24px;
         }
@@ -131,5 +157,14 @@ export default {
 
 .flex-space {
   flex-grow: 100;
+}
+.text-margin {
+  margin-bottom: 8%;
+  @media screen and (max-width: 768px) {
+    margin-bottom: 6%;
+  }
+  @media screen and (max-width: 568px) {
+    margin-bottom: 3%;
+  }
 }
 </style>
