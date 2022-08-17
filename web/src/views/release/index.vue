@@ -14,8 +14,8 @@
             {{ this.appData.name }}
           </div>
           <div class="version text-margin">
-            版本：{{ (appData.version || {}).version }} (build
-            {{ (appData.version || {}).build }})
+            V{{ (appData.version || {}).version }} (build
+            {{ (appData.version || {}).build }}) - {{ size }} MB
           </div>
           <div class="version text-margin">
             更新于 {{ formatDate((appData.version || {}).createTime) }}
@@ -95,6 +95,12 @@ export default {
     hasPreviews() {
       const previews = this.appData.previews ?? [];
       return previews.length > 0;
+    },
+    size() {
+      const version = this.appData.version ?? {};
+      const size = version.size ?? 0;
+      const sizeMB = Number(size / 1024 / 1024).toFixed(1);
+      return sizeMB;
     }
   },
   data() {
