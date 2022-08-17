@@ -21,9 +21,15 @@
             更新于 {{ formatDate((appData.version || {}).createTime) }}
           </div>
           <el-button-group>
-            <el-button type="primary" size="mini" @click="onInstallClick">下载安装</el-button>
-            <el-button type="primary" size="mini" @click="onGooglePlayClick">安卓商店</el-button>
-            <el-button type="primary" size="mini" @click="onAppleStoreClick">苹果商店</el-button>
+            <el-button type="primary" size="mini" @click="onInstallClick">
+              下载安装
+            </el-button>
+            <el-button type="primary" size="mini" @click="onGooglePlayClick">
+              安卓商店
+            </el-button>
+            <el-button type="primary" size="mini" @click="onAppleStoreClick">
+              苹果商店
+            </el-button>
           </el-button-group>
         </div>
         <div class="flex-space"></div>
@@ -55,10 +61,13 @@
         {{ appData.version ? appData.version.vdesc : '' }}
       </text-body>
       <el-divider></el-divider>
-      <text-label class="name-margin" style="margin-top: 10%;">
+      <text-label class="name-margin" style="margin-top: 10%">
         EASYOTA 开源应用内测托管平台
       </text-label>
-      <text-label class="name-margin" style="margin-top: 1.5%; margin-bottom: 20px;">
+      <text-label
+        class="name-margin"
+        style="margin-top: 1.5%; padding-bottom: 20px"
+      >
         APP/公众号/小程序开发请加微信：yangliu945404
       </text-label>
     </div>
@@ -130,10 +139,12 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  height: 100%;
   @include flexStart;
   align-items: center;
   flex-direction: column;
   .size-box {
+    height: 100%;
     max-width: 1100px;
     width: 100%;
     // background-color: grey;
