@@ -21,9 +21,9 @@
             更新于 {{ formatDate((appData.version || {}).createTime) }}
           </div>
           <el-button-group>
-            <el-button type="primary" size="mini">下载安装</el-button>
-            <el-button type="primary" size="mini">安卓商店</el-button>
-            <el-button type="primary" size="mini">苹果商店</el-button>
+            <el-button type="primary" size="mini" @click="onInstallClick">下载安装</el-button>
+            <el-button type="primary" size="mini" @click="onGooglePlayClick">安卓商店</el-button>
+            <el-button type="primary" size="mini" @click="onAppleStoreClick">苹果商店</el-button>
           </el-button-group>
         </div>
         <div class="flex-space"></div>
@@ -55,10 +55,10 @@
         {{ appData.version ? appData.version.vdesc : '' }}
       </text-body>
       <el-divider></el-divider>
-      <text-label class="name-margin" style="margin-top: 1.5%">
+      <text-label class="name-margin" style="margin-top: 10%; font-size: 10px;">
         EASYOTA 开源应用内测托管平台
       </text-label>
-      <text-label class="name-margin" style="margin-top: 1.5%">
+      <text-label class="name-margin" style="margin-top: 1.5%; margin-bottom: 20px; font-size: 10px;">
         APP/公众号/小程序开发请加微信：yangliu945404
       </text-label>
     </div>
@@ -114,6 +114,21 @@ export default {
   methods: {
     formatDate(value) {
       return formatDate('yyyy-MM-dd hh:mm', value);
+    },
+    onInstallClick() {
+      if (this.appData.platform == 'ios') {
+        const manifest = this.appData.version.manifest;
+        const otaurl = `itms-services://?action=download-manifest&url=${manifest}`;
+        window.open(otaurl);
+      } else {
+        window.open(this.appData.version.binUrl);
+      }
+    },
+    onGooglePlayClick() {
+      window.open(this.appData.androidstore);
+    },
+    onAppleStoreClick() {
+      window.open(this.appData.applestore);
     }
   }
 };
@@ -182,7 +197,7 @@ export default {
     @include flexStart;
     overflow: auto;
     .image {
-      width: 180px;
+      width: 35%;
       min-width: 180px;
       margin: 1%;
       border-radius: 8px;
