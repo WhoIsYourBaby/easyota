@@ -35,7 +35,7 @@
         ></vue-qr>
       </div>
       <el-divider></el-divider>
-      <div class="previews">
+      <div class="previews" v-if="hasPreviews">
         <el-image
           :src="item.url"
           fit="cover"
@@ -44,7 +44,7 @@
           :key="item.id"
         ></el-image>
       </div>
-      <el-divider></el-divider>
+      <el-divider v-if="hasPreviews"></el-divider>
       <div class="name name-margin">应用简介</div>
       <text-body class="name-margin" style="margin-top: 1.5%">
         {{ appData.adesc }}
@@ -55,10 +55,10 @@
         {{ appData.version ? appData.version.vdesc : '' }}
       </text-body>
       <el-divider></el-divider>
-      <text-label class="name-margin" style="margin-top: 10%; font-size: 10px;">
+      <text-label class="name-margin" style="margin-top: 10%;">
         EASYOTA 开源应用内测托管平台
       </text-label>
-      <text-label class="name-margin" style="margin-top: 1.5%; margin-bottom: 20px; font-size: 10px;">
+      <text-label class="name-margin" style="margin-top: 1.5%; margin-bottom: 20px;">
         APP/公众号/小程序开发请加微信：yangliu945404
       </text-label>
     </div>
@@ -82,20 +82,14 @@ export default {
     },
     isMobile() {
       return this.$store.state.device.device == 'mobile';
-    }
-  },
-  watch: {
-    isMobile(val) {
-      if (this.appData) {
-        this.currentComp = val ? this.appData.tmobile : this.appData.tdesktop;
-      } else {
-        this.currentComp = val ? 'MobileDefault' : 'DesktopDefault';
-      }
+    },
+    hasPreviews() {
+      const previews = this.appData.previews ?? [];
+      return previews.length > 0;
     }
   },
   data() {
     return {
-      currentComp: 'DesktopDefault',
       appData: {}
     };
   },
