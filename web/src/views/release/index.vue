@@ -44,6 +44,7 @@ export default {
       })
       .then((res) => {
         this.releaseData = res.data.body;
+        document.title = this.releaseData.name;
       });
   }
 };
