@@ -29,15 +29,15 @@
     </el-button-group>
     <div style="width: 90%; max-width: 500px">
       <el-divider></el-divider>
+      <main-title>应用介绍</main-title>
+      <text-body style="margin-top: 20px">{{ this.data.adesc }}</text-body>
+    </div>
+    <div style="width: 90%; max-width: 500px">
+      <el-divider></el-divider>
       <main-title>更新说明</main-title>
       <text-body style="margin-top: 20px">
         {{ this.data.version.vdesc }}
       </text-body>
-    </div>
-    <div style="width: 90%; max-width: 500px">
-      <el-divider></el-divider>
-      <main-title>应用介绍</main-title>
-      <text-body style="margin-top: 20px">{{ this.data.adesc }}</text-body>
     </div>
     <div style="margin-bottom: 100px"></div>
   </div>
