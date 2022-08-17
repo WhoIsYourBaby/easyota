@@ -21,7 +21,7 @@
             更新于 {{ formatDate((appData.version || {}).createTime) }}
           </div>
           <el-button-group>
-            <el-button type="primary" size="mini">下载APK</el-button>
+            <el-button type="primary" size="mini">下载安装</el-button>
             <el-button type="primary" size="mini">安卓商店</el-button>
             <el-button type="primary" size="mini">苹果商店</el-button>
           </el-button-group>
@@ -35,6 +35,32 @@
         ></vue-qr>
       </div>
       <el-divider></el-divider>
+      <div class="previews">
+        <el-image
+          :src="item.url"
+          fit="cover"
+          class="image"
+          v-for="item in appData.previews"
+          :key="item.id"
+        ></el-image>
+      </div>
+      <el-divider></el-divider>
+      <div class="name name-margin">应用简介</div>
+      <text-body class="name-margin" style="margin-top: 1.5%">
+        {{ appData.adesc }}
+      </text-body>
+      <el-divider></el-divider>
+      <div class="name name-margin">更新日志</div>
+      <text-body class="name-margin" style="margin-top: 1.5%">
+        {{ appData.version ? appData.version.vdesc : '' }}
+      </text-body>
+      <el-divider></el-divider>
+      <text-label class="name-margin" style="margin-top: 1.5%">
+        EASYOTA 开源应用内测托管平台
+      </text-label>
+      <text-label class="name-margin" style="margin-top: 1.5%">
+        APP/公众号/小程序开发请加微信：yangliu945404
+      </text-label>
     </div>
   </div>
 </template>
@@ -101,7 +127,6 @@ export default {
   .size-box {
     max-width: 1100px;
     width: 100%;
-    min-height: 100px;
     // background-color: grey;
     .app-info {
       @include flexCenter;
@@ -153,6 +178,16 @@ export default {
       }
     }
   }
+  .previews {
+    @include flexStart;
+    overflow: auto;
+    .image {
+      width: 180px;
+      min-width: 180px;
+      margin: 1%;
+      border-radius: 8px;
+    }
+  }
 }
 
 .flex-space {
@@ -166,5 +201,14 @@ export default {
   @media screen and (max-width: 568px) {
     margin-bottom: 3%;
   }
+}
+.name {
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+.name-margin {
+  padding-left: 2%;
 }
 </style>
