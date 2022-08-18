@@ -61,7 +61,10 @@
         {{ appData.version ? appData.version.vdesc : '' }}
       </text-body>
       <el-divider></el-divider>
-      <text-label class="name-margin" style="margin-top: 10%; padding-bottom: 1%">
+      <text-label
+        class="name-margin"
+        style="margin-top: 10%; padding-bottom: 1%"
+      >
         easyota 开源应用内测托管平台
       </text-label>
     </div>
@@ -155,18 +158,24 @@ export default {
       flex-wrap: wrap;
       margin-top: 8%;
       padding: 2%;
+      @media screen and (max-width: 690px) {
+        flex-direction: column;
+        align-items: center;
+      }
       .icon-part {
         border-radius: 22%;
         border: 1px solid lightgray;
         width: 30%;
         max-width: 220px;
         height: auto;
-        margin-bottom: 4%;
       }
       .qr-part {
         width: 30%;
         max-width: 220px;
         aspect-ratio: 1;
+        @media screen and (max-width: 690px) {
+          margin-top: 3%;
+        }
       }
       .text-part {
         @include flexStart;
@@ -174,6 +183,9 @@ export default {
         align-items: flex-start;
         margin-left: 3%;
         padding-top: 2%;
+        @media screen and (max-width: 690px) {
+          align-items: center;
+        }
         .iconfont {
           font-size: 24px;
         }
