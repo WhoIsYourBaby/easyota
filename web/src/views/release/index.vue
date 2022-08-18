@@ -61,14 +61,8 @@
         {{ appData.version ? appData.version.vdesc : '' }}
       </text-body>
       <el-divider></el-divider>
-      <text-label class="name-margin" style="margin-top: 10%">
-        EASYOTA 开源应用内测托管平台
-      </text-label>
-      <text-label
-        class="name-margin"
-        style="margin-top: 1.5%; padding-bottom: 20px"
-      >
-        APP/公众号/小程序开发请加微信：yangliu945404
+      <text-label class="name-margin" style="margin-top: 10%; padding-bottom: 1%">
+        easyota 开源应用内测托管平台
       </text-label>
     </div>
   </div>
