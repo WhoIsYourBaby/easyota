@@ -33,14 +33,14 @@ $red: #e63d3d;
   font-size: 14px;
   color: $fontText;
   font-weight: 400;
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 // 辅助说明字体大小
 @mixin textminip {
   font-size: 12px;
   color: $fontSubText;
   font-weight: 400;
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 
 @mixin flexCenter {
