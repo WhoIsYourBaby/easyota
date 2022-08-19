@@ -68,6 +68,12 @@
         easyota 开源应用内测托管平台
       </text-label>
     </div>
+    <img
+      src="@/assets/outbrowser_backdrop@2x.png"
+      alt="outside"
+      class="outside"
+      v-if="isInside"
+    />
   </div>
 </template>
 
@@ -102,7 +108,8 @@ export default {
   },
   data() {
     return {
-      appData: {}
+      appData: {},
+      isInside: false
     };
   },
   mounted() {
@@ -122,6 +129,11 @@ export default {
       return formatDate('yyyy-MM-dd hh:mm', value);
     },
     onInstallClick() {
+      const isInside = this.isAppInside();
+      if (isInside != false) {
+        this.isInside = true;
+        return;
+      }
       if (this.appData.platform == 'ios') {
         const manifest = this.appData.version.manifest;
         const otaurl = `itms-services://?action=download-manifest&url=${manifest}`;
@@ -135,6 +147,17 @@ export default {
     },
     onAppleStoreClick() {
       window.open(this.appData.applestore);
+    },
+    isAppInside() {
+      var ua = navigator.userAgent.toLowerCase();
+      if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+        return 'weixin';
+      } else if (ua.match(/QQ/i) == 'qq') {
+        return 'QQ';
+      } else if (ua.match(/Alipay/i) == 'alipay' && payway == 2) {
+        return 'alipay';
+      }
+      return false;
     }
   }
 };
@@ -146,6 +169,7 @@ export default {
   @include flexStart;
   align-items: center;
   flex-direction: column;
+  position: relative;
   .size-box {
     height: 100%;
     max-width: 1100px;
@@ -219,6 +243,16 @@ export default {
       margin: 1%;
       border-radius: 8px;
     }
+  }
+
+  .outside {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #0070c9;
+    z-index: 100;
   }
 }
 
