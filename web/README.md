@@ -89,3 +89,21 @@ Modern browsers and Internet Explorer 10+.
 [MIT](https://github.com/PanJiaChen/vue-admin-template/blob/master/LICENSE) license.
 
 Copyright (c) 2017-present PanJiaChen
+
+
+## nginx 配置
+
+location / {
+	try_files $uri $uri/ /index.html;
+}
+location /api/
+{
+    proxy_pass http://localhost:3001/;
+}
+location ~ /upload/[a-zA-Z0-9]+\.(gif|jpg|jpeg|png|bmp|swf|apk|json|ipa)$
+{
+    root   /www/wwwroot/ota.bojialighting.com/server/public;
+    expires      30d;
+    error_log /dev/null;
+    access_log off;
+}
