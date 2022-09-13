@@ -111,15 +111,16 @@ export default {
       let fd = new FormData();
       fd.append('file', file.file);
       this.loading = true;
+      const self = this;
       request({
         url: '/app/upload',
         method: 'post',
         headers: {'Content-Type': 'multipart/form-data'},
         data: fd,
-        onUploadProgress: (event) => {
+        onUploadProgress: function (event) {
           const percent = (event.loaded / event.total) * 100;
           const loadingText = `${parseInt(percent)}% 上传中...`;
-          this.loadingText = loadingText;
+          self.loadingText = loadingText;
         }
       })
         .then((resp) => {
