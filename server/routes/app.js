@@ -37,7 +37,7 @@ router.get('/', async (ctx, next) => {
   const appId = parseInt(qbody.appId);
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore, previews from app where id=? and user_id=?',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, applestore, androidstore, previews, yingyongbao, hide_local from app where id=? and user_id=?',
     [appId, ctx.state.user.id]
   );
   const body = appInDb.length > 0 ? appInDb[0] : null;
@@ -315,7 +315,7 @@ router.post('/update', async (ctx, next) => {
   const previews = qbody.previews.map((item) => item.id).join(',');
   await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'update app set name=?, adesc=?, short=?, applestore=?, androidstore=?, previews=? where id=? and user_id=?',
+    'update app set name=?, adesc=?, short=?, applestore=?, androidstore=?, previews=?, yingyongbao=?, hide_local=? where id=? and user_id=?',
     [
       qbody.name,
       qbody.adesc,
@@ -323,24 +323,26 @@ router.post('/update', async (ctx, next) => {
       qbody.applestore,
       qbody.androidstore,
       previews,
+      qbody.yingyongbao,
+      qbody.hide_local,
       qbody.id,
       ctx.state.user.id
     ]
   );
   appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, androidstore, applestore, previews from app where id=? and user_id=?;',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, androidstore, applestore, previews, yingyongbao, hide_local from app where id=? and user_id=?;',
     [qbody.id, ctx.state.user.id]
   );
   const body = appInDb[0];
   body.shortUrl = appendHostToShort(ctx, body.short);
   const pids = (body.previews || '').split(',');
-    const previewUrls = await dbhealper.makePromise(
-      ctx.state.sqlconn,
-      'select url, id, type from upload where id in (?)',
-      [pids]
-    );
-    body.previews = previewUrls;
+  const previewUrls = await dbhealper.makePromise(
+    ctx.state.sqlconn,
+    'select url, id, type from upload where id in (?)',
+    [pids]
+  );
+  body.previews = previewUrls;
   ctx.body = {
     code: 200,
     msg: 'ok',
@@ -591,7 +593,7 @@ router.get('/release', async (ctx, next) => {
   const branch = qbody.branch;
   const appInDb = await dbhealper.makePromise(
     ctx.state.sqlconn,
-    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, tmobile, tdesktop, applestore, androidstore, previews from app where short=?;',
+    'select id, create_time as createTime, name, icon, short, adesc, platform, bundle_id as bundleId, user_id as userId, tmobile, tdesktop, applestore, androidstore, previews, yingyongbao, hide_local from app where short=?;',
     [short]
   );
   const app = appInDb.length > 0 ? appInDb[0] : null;

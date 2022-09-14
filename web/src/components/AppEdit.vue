@@ -12,16 +12,29 @@
     destroy-on-close
   >
     <el-form :model="appInfo">
+      <el-form-item label="隐藏本地下载">
+        <el-switch
+          v-model="appInfo.hide_local"
+          :active-value="1"
+          :inactive-value="0"
+        ></el-switch>
+      </el-form-item>
       <el-form-item label="苹果商店">
         <el-input
           placeholder="请输入苹果商店下载链接"
           v-model="appInfo.applestore"
         ></el-input>
       </el-form-item>
-      <el-form-item label="安卓商店">
+      <el-form-item label="GooglePlay">
         <el-input
-          placeholder="请输入安卓商店下载链接"
+          placeholder="请输入GooglePlay下载链接"
           v-model="appInfo.androidstore"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="应用宝">
+        <el-input
+          placeholder="请输入应用宝下载链接"
+          v-model="appInfo.yingyongbao"
         ></el-input>
       </el-form-item>
       <el-form-item label="应用简介">
@@ -127,7 +140,7 @@ export default {
         method: 'post',
         headers: {'Content-Type': 'multipart/form-data'},
         data: fd,
-        onUploadProgress: function(event) {
+        onUploadProgress: function (event) {
           const percent = (event.loaded / event.total) * 100;
           const loadingText = `${parseInt(percent)}% 上传中...`;
           self.loadingText = loadingText;

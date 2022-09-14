@@ -21,13 +21,36 @@
             更新于 {{ formatDate((appData.version || {}).createTime) }}
           </div>
           <el-button-group>
-            <el-button type="primary" size="mini" @click="onInstallClick">
-              下载安装
+            <el-button
+              v-if="appData.hide_local == 0"
+              type="primary"
+              size="mini"
+              @click="onInstallClick"
+            >
+              下载APK
             </el-button>
-            <el-button type="primary" size="mini" @click="onGooglePlayClick">
-              安卓商店
+            <el-button
+              type="primary"
+              size="mini"
+              @click="onGooglePlayClick"
+              v-if="(appData.androidstore || '') != ''"
+            >
+              GooglePlay
             </el-button>
-            <el-button type="primary" size="mini" @click="onAppleStoreClick">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="onYingyongbaoClick"
+              v-if="(appData.yingyongbao || '') != ''"
+            >
+              应用宝
+            </el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              @click="onAppleStoreClick"
+              v-if="(appData.applestore || '') != ''"
+            >
               苹果商店
             </el-button>
           </el-button-group>
@@ -147,6 +170,9 @@ export default {
     },
     onAppleStoreClick() {
       window.open(this.appData.applestore);
+    },
+    onYingyongbaoClick() {
+      window.open(this.appData.yingyongbao);
     },
     isAppInside() {
       var ua = navigator.userAgent.toLowerCase();
