@@ -1,4 +1,4 @@
 module.exports = {
-  api_host: 'ota.bojialighting.com',
-  web_host: 'ota.bojialighting.com',
+  api_host: 'ota.kimoji.top',
+  web_host: 'ota.kimoji.top',
 };
