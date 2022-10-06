@@ -43,7 +43,9 @@
           @keyup.enter.native="onLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
 
@@ -61,6 +63,25 @@
         <span>password: 5815057</span>
       </div> -->
     </el-form>
+    <div
+      style="
+        position: fixed;
+        text-align: center;
+        bottom: 0;
+        margin: 0 auto;
+        width: 100%;
+        color: #5c6b77;
+        padding-bottom: 24px;
+      "
+    >
+      <a
+        target="_blank"
+        style="color: #5c6b77"
+        href="https://beian.miit.gov.cn/"
+      >
+        蜀ICP备2021025134号-1
+      </a>
+    </div>
   </div>
 </template>
 
@@ -90,8 +111,12 @@ export default {
         password: '5815057'
       },
       loginRules: {
-        username: [{required: true, trigger: 'blur', validator: validateUsername}],
-        password: [{required: true, trigger: 'blur', validator: validatePassword}]
+        username: [
+          {required: true, trigger: 'blur', validator: validateUsername}
+        ],
+        password: [
+          {required: true, trigger: 'blur', validator: validatePassword}
+        ]
       },
       loading: false,
       passwordType: 'password',
