@@ -28,15 +28,20 @@ CREATE TABLE `app` (
   `name` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `icon` varchar(265) COLLATE utf8mb4_unicode_ci NOT NULL,
   `short` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `adesc` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `adesc` text COLLATE utf8mb4_unicode_ci,
   `platform` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'ios/android',
   `bundle_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'bundleid可能因为iOS和安卓的重复',
   `user_id` int(11) NOT NULL,
   `tmobile` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT 'MobileDefault',
   `tdesktop` varchar(32) COLLATE utf8mb4_unicode_ci DEFAULT 'DesktopDefault',
+  `applestore` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `androidstore` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `previews` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `yingyongbao` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hide_local` tinyint(2) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `short_UNIQUE` (`short`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +78,7 @@ CREATE TABLE `app_version` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `create_time_UNIQUE` (`create_time`),
   UNIQUE KEY `uuid_UNIQUE` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -98,8 +103,9 @@ CREATE TABLE `upload` (
   `path` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `user_id` int(11) NOT NULL,
   `size` int(11) unsigned DEFAULT '0' COMMENT '约等于4G',
+  `type` varchar(128) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +145,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'2022-08-14 19:50:45','ligun006@163.com','admin','5815057','admin',NULL,NULL),(2,'2022-08-14 20:30:40','admin@bojia.com','bojia','123456','admin',NULL,NULL);
+INSERT INTO `user` VALUES (1,'2022-08-14 19:50:45','ligun006@163.com','admin','5815057','admin',NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -152,4 +158,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-14 20:30:59
+-- Dump completed on 2022-10-31 20:37:55
