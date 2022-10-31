@@ -279,7 +279,8 @@ router.post('/create', async (ctx, next) => {
     version:
       platform === 'android' ? parseResult.versionName : parseResult.CFBundleShortVersionString,
     build: platform === 'android' ? parseResult.versionCode : parseResult.CFBundleVersion,
-    manifest: qbody.manifest
+    manifest: qbody.manifest,
+    size: size
   };
   await createApp(ctx.state.sqlconn, ctx.state.user, appSubmit);
   ctx.body = {
