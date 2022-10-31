@@ -27,7 +27,7 @@
               size="mini"
               @click="onInstallClick"
             >
-              下载APK
+              {{ appData.platform == 'ios' ? '安装IPA' : '安装APK' }}
             </el-button>
             <el-button
               type="primary"
