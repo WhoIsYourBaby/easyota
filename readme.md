@@ -1,6 +1,6 @@
 ### 类似 fir.im
 
-可以自己搭建 fir.im，适合企业搭建内测分发平台，快速发布iOS/Android下载链接
+可以自己搭建 fir.im，适合企业搭建内测分发平台，快速发布iOS/Android下载链接与二维码
 
 前端采用Vue+ElementUI全家桶
 后端采用Nodejs+Koa+mysql
