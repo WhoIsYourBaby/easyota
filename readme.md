@@ -14,6 +14,9 @@
 
 iOS需要HTTPS，搭建平台时需要配置证书
 
-TODO
 
-- Docker部署配置
+![p1](./p1.png "p1")
+
+![p3](./p3.png "p3")
+
+![p2](./p2.png "p2")
